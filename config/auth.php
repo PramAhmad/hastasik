@@ -40,6 +40,15 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+        'seller' => [
+            'driver' => 'session',
+            'provider' => 'sellers',
+        ],
+        // tambahkan guard untuk admin
+        'admin' => [
+            'driver' => 'session',
+            'provider' => 'admins',
+        ],
     ],
 
     /*
@@ -64,6 +73,13 @@ return [
             'driver' => 'eloquent',
             'model' => App\Models\User::class,
         ],
+        // tambahkan provider untuk seller
+        'sellers' => [
+            'driver' => 'eloquent',
+            'model' => Modules\SellerModule\App\Models\Seller::class,
+        ],
+        // tambahkan provider untuk admin
+        
 
         // 'users' => [
         //     'driver' => 'database',

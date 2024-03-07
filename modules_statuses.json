@@ -1,3 +1,4 @@
 {
-    "ProductsModule": true
+    "ProductsModule": true,
+    "SellerModule": true
 }

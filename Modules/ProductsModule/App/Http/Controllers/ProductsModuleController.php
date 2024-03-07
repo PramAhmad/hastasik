@@ -34,24 +34,28 @@ class ProductsModuleController extends Controller
      */
     public function store(Request $request)
     {
+        if(auth()->guard('seller')->check()) {
+            $data = DB::connection('mongodb')->collection('products')->insert([
 
-        $data = DB::connection('mongodb')->collection('products')->insert([
-
-            "nama_product" => "pramuditaa",
-            "seller_id" => "1",
-            "harga" => "100000",
-            "deskripsi" => "ini adalah deskripsi",
-            "stok" => "10",
-            "berat" => "1",
-            "foto" => ["foto1","foto2"],
-            "category" => ["category1","category2"],
-            "status" => "1",
-            "created_at" => "2021-10-10",
-            "updated_at" => "2021-10-10"
-
-        ]);
-
-        return response()->json(["message" => "success","data" => $data,"status" => 200]);
+                "nama_product" => "pramuditaa",
+                "seller_id" => "1",
+                "harga" => "100000",
+                "deskripsi" => "ini adalah deskripsi",
+                "stok" => "10",
+                "berat" => "1",
+                "foto" => ["foto1","foto2"],
+                "category" => ["category1","category2"],
+                "status" => "1",
+                "created_at" => "2021-10-10",
+                "updated_at" => "2021-10-10"
+    
+            ]);
+    
+            return response()->json(["message" => "success","data" => $data,"status" => 200]);
+        } else {
+            return response()->json(["message" => "unauthorized","status" => 401]);
+        }
+    
     }
 
     /**

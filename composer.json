@@ -10,8 +10,10 @@
         "laravel/framework": "^10.10",
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8",
+        "league/flysystem-aws-s3-v3": "^3.24",
         "mongodb/laravel-mongodb": "^4.1",
-        "nwidart/laravel-modules": "^10.0"
+        "nwidart/laravel-modules": "^10.0",
+        "tymon/jwt-auth": "^2.0"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",
