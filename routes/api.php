@@ -22,9 +22,11 @@ Route::post('logout', function (Request $request) {
     });
     return response()->json(["message" => "success","data" => "logout success","status" => 200]);
 });
-Route::get('products', [ProductsModuleController::class, 'index'])->middleware(['auth','seller']);
+Route::get('products', [ProductsModuleController::class, 'index'])->middleware(['auth:sanctum','seller']);
 Route::post('products/create', [ProductsModuleController::class, 'store']);
-
+Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+    return $request->user();
+});
 Route::get("noauth", function(){
     return response()->json(["message" => "error","data" => "unauthorized","status" => 401]);
 })->name("noauth");

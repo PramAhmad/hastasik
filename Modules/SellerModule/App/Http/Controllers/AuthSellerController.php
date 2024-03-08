@@ -106,16 +106,16 @@ class AuthSellerController extends Controller
                 ]);
             }
             // cek status seller
-            // $seller = Seller::where('user_id', $user->id)->first();
-            // if ($seller->status == 0) {
-            //     return response()->json([
-            //         "message" => "Seller belum di konfirmasi",
-            //         "status" => 401,
-            //     ]);
-            // }
-            
-             
-      
+                $seller = Seller::where('user_id', $user->id)->first();
+                if ($seller->status == 0) {
+                    return response()->json([
+                        "message" => "Seller belum di konfirmasi",
+                        "status" => 401,
+                    ]);
+                }
+                
+                
+        
             // login seller
             $token = $user->createToken('seller')->plainTextToken;
             return response()->json([
@@ -132,9 +132,10 @@ class AuthSellerController extends Controller
                 "status" => 401,
             ]);
         }
-
-    
-
     
         }
+
+
+
+        
 }
