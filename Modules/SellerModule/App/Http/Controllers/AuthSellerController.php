@@ -10,6 +10,7 @@ use GuzzleHttp\Client;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use BackblazeB2\Client as B2Client;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Modules\SellerModule\App\Models\Seller;
@@ -35,9 +36,7 @@ class AuthSellerController extends Controller
     
         $file = $request->file('foto');
         // split space to _ 
-        $file = str_replace(' ', '_', $file);
-        $fileName = time() . $file->getClientOriginalName();
-
+        $fileName = time() . '_' . str_replace(' ', '_', $file->getClientOriginalName());
         // upload fil ke storage folder sellerfoto
         $file->storeAs('sellerfoto', $fileName, 'public');
         $fileUrl = url('storage/sellerfoto/' . $fileName);
@@ -46,6 +45,7 @@ class AuthSellerController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => bcrypt($request->password),
+            'role' => 'seller',
         ]);
     
         $seller = Seller::create([
@@ -91,24 +91,50 @@ class AuthSellerController extends Controller
         return $address;
     }
 
-    public function LoginSeller(Request  $request){
+        public function LoginSeller(Request  $request){
         $request->validate([
             'email' => 'required|email',
             'password' => 'required',
         ]);
-        $user = User::where('email', $request->email)->first();
-    // check password
-        if (!$user || !Hash::check($request->password, $user->password)) {
+        // cek email dan password ada di table user tidak
+        if(Auth::attempt($request->only('email', 'password'))){
+            $user = User::where('email', $request->email)->first();
+            if (!$user || !Hash::check($request->password, $user->password)) {
+                return response()->json([
+                    "message" => "Email atau password salah",
+                    "status" => 401,
+                ]);
+            }
+            // cek status seller
+            // $seller = Seller::where('user_id', $user->id)->first();
+            // if ($seller->status == 0) {
+            //     return response()->json([
+            //         "message" => "Seller belum di konfirmasi",
+            //         "status" => 401,
+            //     ]);
+            // }
+            
+             
+      
+            // login seller
+            $token = $user->createToken('seller')->plainTextToken;
             return response()->json([
-                "message" => "Email atau password salah",
+                "message" => "success",
+                "data" => $user,
+                "token" => $token,
+                "status" => 200,
+            ]);
+        }
+        else {
+            return response()->json([
+                "message" => "error",
+                "data" => "unauthorized",
                 "status" => 401,
             ]);
         }
-        $token = $user->createToken('seller')->plainTextToken;
-        return response()->json([
-            "message" => "Berhasil login",
-            "token" => $token,
-            "status" => 200,
-        ]);
-    }
+
+    
+
+    
+        }
 }

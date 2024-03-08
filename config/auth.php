@@ -37,7 +37,7 @@ return [
 
     'guards' => [
         'web' => [
-            'driver' => 'session',
+            'driver' => 'passport',
             'provider' => 'users',
         ],
         'seller' => [
@@ -48,6 +48,10 @@ return [
         'admin' => [
             'driver' => 'session',
             'provider' => 'admins',
+        ],
+        'api' => [
+            'driver' => 'passport',
+            'provider' => 'users',
         ],
     ],
 
@@ -79,7 +83,7 @@ return [
             'model' => Modules\SellerModule\App\Models\Seller::class,
         ],
         // tambahkan provider untuk admin
-        
+
 
         // 'users' => [
         //     'driver' => 'database',
