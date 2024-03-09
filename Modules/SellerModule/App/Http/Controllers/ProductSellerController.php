@@ -89,7 +89,22 @@ class ProductSellerController extends Controller
      */
     public function show($id)
     {
-        return view('sellermodule::show');
+       $data = DB::connection('mongodb')->collection('products')->where('_id', $id)->get();
+         if($data->count() >= 0){
+          return response()->json([
+                "message" => "success",
+                "data" => $data,
+                "status" => 200
+          
+          ]);
+        }else{
+            return response()->json([
+                "message" => "error",
+                "data" => "data not found",
+                "status" => 404
+          
+          ]);
+        }
     }
 
     /**
