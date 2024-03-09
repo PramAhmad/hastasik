@@ -1,0 +1,257 @@
+openapi: 3.0.3
+info:
+  title: Laravel
+  description: ''
+  version: 1.0.0
+servers:
+  -
+    url: 'http://localhost'
+paths:
+  /api/logout:
+    post:
+      summary: ''
+      operationId: postApiLogout
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+  /api/products:
+    get:
+      summary: 'Display a listing of the resource.'
+      operationId: displayAListingOfTheResource
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: Unauthenticated
+                  status: 401
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated
+                  status:
+                    type: integer
+                    example: 401
+      tags:
+        - Endpoints
+      security: []
+  /api/products/create:
+    post:
+      summary: 'Store a newly created resource in storage.'
+      operationId: storeANewlyCreatedResourceInStorage
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+  /api/user:
+    get:
+      summary: ''
+      operationId: getApiUser
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: Unauthenticated
+                  status: 401
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated
+                  status:
+                    type: integer
+                    example: 401
+      tags:
+        - Endpoints
+      security: []
+  /api/noauth:
+    get:
+      summary: ''
+      operationId: getApiNoauth
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: error
+                  data: unauthorized
+                  status: 401
+                properties:
+                  message:
+                    type: string
+                    example: error
+                  data:
+                    type: string
+                    example: unauthorized
+                  status:
+                    type: integer
+                    example: 401
+      tags:
+        - Endpoints
+      security: []
+  /api/v1/productsmodule:
+    get:
+      summary: ''
+      operationId: getApiV1Productsmodule
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: Unauthenticated
+                  status: 401
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated
+                  status:
+                    type: integer
+                    example: 401
+      tags:
+        - Endpoints
+      security: []
+  /api/seller/register:
+    post:
+      summary: ''
+      operationId: postApiSellerRegister
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: ''
+                  example: porro
+                email:
+                  type: string
+                  description: 'Must be a valid email address.'
+                  example: jesus39@example.org
+                password:
+                  type: string
+                  description: ''
+                  example: harum
+                nama_toko:
+                  type: string
+                  description: ''
+                  example: ex
+                nama_pemilik:
+                  type: string
+                  description: ''
+                  example: tenetur
+                no_hp:
+                  type: string
+                  description: ''
+                  example: nobis
+                foto:
+                  type: string
+                  format: binary
+                  description: 'Must be an image. Must not be greater than 2048 kilobytes.'
+                deskripsi:
+                  type: string
+                  description: ''
+                  example: vel
+                kota:
+                  type: string
+                  description: ''
+                  example: laboriosam
+                kecamatan:
+                  type: string
+                  description: ''
+                  example: est
+                kelurahan:
+                  type: string
+                  description: ''
+                  example: dolor
+                alamat:
+                  type: string
+                  description: ''
+                  example: et
+              required:
+                - name
+                - email
+                - password
+                - nama_toko
+                - nama_pemilik
+                - no_hp
+                - foto
+                - deskripsi
+                - kota
+                - kecamatan
+                - kelurahan
+                - alamat
+      security: []
+  /api/seller/login:
+    post:
+      summary: ''
+      operationId: postApiSellerLogin
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: 'Must be a valid email address.'
+                  example: sterling.bashirian@example.net
+                password:
+                  type: string
+                  description: ''
+                  example: dolorum
+              required:
+                - email
+                - password
+      security: []
+  /api/seller/logout:
+    post:
+      summary: ''
+      operationId: postApiSellerLogout
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+tags:
+  -
+    name: Endpoints
+    description: ''

@@ -3,65 +3,52 @@
 namespace Modules\SellerModule\App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 
 class SellerModuleController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function ShowSeller()
     {
-        return view('sellermodule::index');
+        $data = Auth::user();
+        return response()->json($data);
     }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function UpdateDataSeller(Request $request)
     {
-        return view('sellermodule::create');
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request): RedirectResponse
-    {
-        //
-    }
-
-    /**
-     * Show the specified resource.
-     */
-    public function show($id)
-    {
-        return view('sellermodule::show');
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit($id)
-    {
-        return view('sellermodule::edit');
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, $id): RedirectResponse
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy($id)
-    {
-        //
+        try {
+            $request->validate([
+                'nama_toko' => 'required',
+                'nama_pemilik' => 'required',
+                'no_hp' => 'required',
+                'deskripsi' => 'required',
+                'kota' => 'required',
+                'kecamatan' => 'required',
+                'kelurahan' => 'required',
+                'alamat' => 'required',
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json(["message" => "error", "data" => "data not valid", "status" => 400]);
+        }
+        $seller = User::where('user_id', Auth::user()->id)->first()
+            ->update([
+                'nama_toko' => $request->nama_toko,
+                'nama_pemilik' => $request->nama_pemilik,
+                'no_hp' => $request->no_hp,
+                'deskripsi' => $request->deskripsi,
+                'kota' => $request->kota,
+                'kecamatan' => $request->kecamatan,
+                'kelurahan' => $request->kelurahan,
+                'alamat' => $request->alamat,
+                'longitude' => $request->longitude,
+                'latitude' => $request->latitude,
+            ]);
+        return response()->json([
+            "message" => "success",
+            "data" => $seller,
+            "status" => 200
+        ]);
     }
 }

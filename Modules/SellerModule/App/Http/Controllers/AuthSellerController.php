@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Notifications\SellerRegisterNotification;
 use AWS\CRT\Log;
+use Aws\Iot\IotClient;
 use GuzzleHttp\Client;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -17,7 +18,10 @@ use Modules\SellerModule\App\Models\Seller;
 
 class AuthSellerController extends Controller
 {
-    public function RegisterSeller(Request $request) {
+        
+    public function RegisterSeller(Request $request)
+    {
+  
         $request->validate([
             'name' => 'required',
             'email' => 'required|email|unique:users',
@@ -31,23 +35,29 @@ class AuthSellerController extends Controller
             'kecamatan' => 'required',
             'kelurahan' => 'required',
             'alamat' => 'required',
-           
+
         ]);
-    
+
         $file = $request->file('foto');
         // split space to _ 
         $fileName = time() . '_' . str_replace(' ', '_', $file->getClientOriginalName());
         // upload fil ke storage folder sellerfoto
         $file->storeAs('sellerfoto', $fileName, 'public');
         $fileUrl = url('storage/sellerfoto/' . $fileName);
-
+        // validate size file
+        if ($file->getSize() > 2048) {
+            return response()->json([
+                "message" => "File terlalu besar",
+                "status"     => 400,
+            ]);
+        }
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => bcrypt($request->password),
             'role' => 'seller',
         ]);
-    
+
         $seller = Seller::create([
             'user_id' => $user->id,
             'nama_toko' => $request->nama_toko,
@@ -70,7 +80,7 @@ class AuthSellerController extends Controller
                 "message" => "Gagal membuat seller",
                 "status" => 400,
             ]);
-        }   
+        }
         // Realtime notification to admin in web
         return response()->json([
             "message" => "Tunggu Konfirmasi dari admin",
@@ -78,9 +88,10 @@ class AuthSellerController extends Controller
             "status" => 200,
         ]);
     }
-    
 
-    public function getAddress() {
+
+    public function getAddress()
+    {
         // using example kooridnate
         $latitude = -6.1753924;
         $longitude = 106.8271528;
@@ -91,13 +102,14 @@ class AuthSellerController extends Controller
         return $address;
     }
 
-        public function LoginSeller(Request  $request){
+    public function LoginSeller(Request  $request)
+    {
         $request->validate([
             'email' => 'required|email',
             'password' => 'required',
         ]);
         // cek email dan password ada di table user tidak
-        if(Auth::attempt($request->only('email', 'password'))){
+        if (Auth::attempt($request->only('email', 'password'))) {
             $user = User::where('email', $request->email)->first();
             if (!$user || !Hash::check($request->password, $user->password)) {
                 return response()->json([
@@ -106,16 +118,14 @@ class AuthSellerController extends Controller
                 ]);
             }
             // cek status seller
-                $seller = Seller::where('user_id', $user->id)->first();
-                if ($seller->status == 0) {
-                    return response()->json([
-                        "message" => "Seller belum di konfirmasi",
-                        "status" => 401,
-                    ]);
-                }
-                
-                
-        
+            $seller = Seller::where('user_id', $user->id)->first();
+            if ($seller->status == 0) {
+                return response()->json([
+                    "message" => "Seller belum di konfirmasi",
+                    "status" => 401,
+                ]);
+            }
+
             // login seller
             $token = $user->createToken('seller')->plainTextToken;
             return response()->json([
@@ -124,18 +134,24 @@ class AuthSellerController extends Controller
                 "token" => $token,
                 "status" => 200,
             ]);
-        }
-        else {
+        } else {
             return response()->json([
                 "message" => "error",
                 "data" => "unauthorized",
                 "status" => 401,
             ]);
         }
-    
-        }
+    }
 
-
-
-        
+    public function LogoutSeller(Request $request)
+    {
+        auth()->user()->tokens->each(function ($token, $key) {
+            $token->delete();
+        });
+        return response()->json([
+            "message" => "success",
+            "data" => "logout success",
+            "status" => 200
+        ]);
+    }
 }
