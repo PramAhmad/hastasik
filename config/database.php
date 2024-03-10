@@ -38,6 +38,9 @@ return [
             'driver' => 'mongodb',
             'dsn' => env('DB_URI', 'mongodb+srv://pramuditaadit2810:tasikmalaya123..@hastasikcluster0.xvfcac3.mongodb.net/?retryWrites=true&w=majority&appName=hastasikCluster0'),
             'database' => 'hastasik',
+            'options' => [
+                'tls' => true
+            ]
         ],
         'sqlite' => [
             'driver' => 'sqlite',

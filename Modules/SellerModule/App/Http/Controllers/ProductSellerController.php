@@ -16,48 +16,65 @@ class ProductSellerController extends Controller
      */
     public function index()
     {
-    $id = auth()->user()->id;
-  
-    $data = DB::connection('mongodb')
-    ->collection('products')
-    ->where('seller_id',"1")
-    ->get();
+        $id = auth()->user()->id;
 
-$response = [
-    'message' => 'success',
-    'data' => $data,
-    'status' => 200,
-];
+        $data = DB::connection('mongodb')
+            ->collection('products')
+            ->where('seller_id', $id)
+            ->get();
+        $orderByParams = request()->query('orderBy');
+        if ($orderByParams == 'desc') {
+            $data = $data->sortByDesc('created_at');
+        } else if ($orderByParams == 'asc') {
+            $data = $data->sortBy('created_at');
+        }
 
-return response()->json($response);
 
+
+        $response = [
+            'message' => 'success',
+            "count" => $data->count(),
+            'data' => $data,
+            'status' => 200,
+        ];
+
+        return response()->json($response);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+   
     public function create()
     {
         return view('sellermodule::create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+  
     public function store(Request $request)
     {
-        try{
+        try {
             $request->validate([
                 'nama_produk' => 'required',
                 'harga' => 'required',
                 'deskripsi' => 'required',
                 'stok' => 'required',
-                'foto' => 'required',
-                'category' => 'required'
+                'foto.*' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                'diskon' => 'required',
+                'category' => 'required',
             ]);
-        }catch (\Throwable $th) {
-            return response()->json(["message" => "error", "data" => "data not valid", "status" => 400]);
+        } catch (\Throwable $th) {
+            return response()->json(["message" => "error", "data" => "data gk valid", "status" => 400]);
         }
+
+        // Handle photos
+        $foto = $request->file('foto');
+        $fotoNames = [];
+        //    loop semua foto
+        foreach ($foto as $index => $f) {
+            $fotoName = time() . $index . '.' . $f->extension();
+            $f->storeAs('fotoproducts', $fotoName, 'public');
+            $fileurl = url('storage/fotoproducts/' . $fotoName);
+            $fotoNames[$index] = $fileurl;
+        }
+
 
         $data = DB::connection('mongodb')->collection('products')->insert([
             "nama_produk" => $request->nama_produk,
@@ -65,67 +82,52 @@ return response()->json($response);
             "harga" => $request->harga,
             "deskripsi" => $request->deskripsi,
             "stok" => $request->stok,
-            "foto" => $request->foto,
+            "foto" => $fotoNames,
+            "diskon" => $request->diskon,
             "category" => $request->category,
-            "created_at" => date('Y-m-d'),
-            "updated_at" => date('Y-m-d')
+            "created_at" => date('Y-m-d-h-m-s'),
+
         ]);
-        if($data == true){
+
+        if ($data == true) {
             return response()->json([
                 "message" => "success",
                 "data" => $data,
-                "status" => 200
-            
+                "status" => 200,
             ]);
-        }else{
+        } else {
             return response()->json([
                 "message" => "error",
                 "data" => "data not found",
-                "status" => 404
-            
+                "status" => 404,
             ]);
         }
-
-        
     }
 
-    /**
-     * Show the specified resource.
-     */
+ 
     public function show($id)
     {
-       $data = DB::connection('mongodb')->collection('products')->where('_id', $id)->get();
-         if($data->count() >= 0){
-          return response()->json([
+        $data = DB::connection('mongodb')->collection('products')->where('_id', $id)->get();
+        if ($data->count() >= 0) {
+            return response()->json([
                 "message" => "success",
                 "data" => $data,
                 "status" => 200
-          
-          ]);
-        }else{
+
+            ]);
+        } else {
             return response()->json([
                 "message" => "error",
-                "data" => "data not found",
+                "data" => "data tidak ditemukan",
                 "status" => 404
-          
-          ]);
+
+            ]);
         }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit($id)
-    {
-        return view('sellermodule::edit');
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, $id)
     {
-        try{
+        try {
             $request->validate([
                 'nama_produk' => 'required',
                 'harga' => 'required',
@@ -134,7 +136,7 @@ return response()->json($response);
                 'foto' => 'required',
                 'category' => 'required'
             ]);
-        }catch (\Throwable $th) {
+        } catch (\Throwable $th) {
             return response()->json(["message" => "error", "data" => "data not valid", "status" => 400]);
         }
 
@@ -149,19 +151,19 @@ return response()->json($response);
             "updated_at" => date('Y-m-d')
         ]);
 
-        if($data == true){
+        if ($data == true) {
             return response()->json([
                 "message" => "success",
                 "data" => $data,
                 "status" => 200
-            
+
             ]);
-        }else{
+        } else {
             return response()->json([
                 "message" => "error",
                 "data" => "data not found",
                 "status" => 404
-            
+
             ]);
         }
     }
@@ -169,19 +171,19 @@ return response()->json($response);
     public function destroy($id)
     {
         $data = DB::connection('mongodb')->collection('products')->where('_id', $id)->delete();
-        if($data == true){
+        if ($data == true) {
             return response()->json([
                 "message" => "success",
                 "data" => $data,
                 "status" => 200
-            
+
             ]);
-        }else{
+        } else {
             return response()->json([
                 "message" => "error",
                 "data" => "data not found",
                 "status" => 404
-            
+
             ]);
         }
     }

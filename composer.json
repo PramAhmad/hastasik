@@ -14,6 +14,7 @@
         "laravel/tinker": "^2.8",
         "league/flysystem-aws-s3-v3": "^3.24",
         "mongodb/laravel-mongodb": "^4.1",
+        "mongodb/mongodb": "^1.16",
         "nwidart/laravel-modules": "^10.0",
         "tymon/jwt-auth": "^2.0"
     },
