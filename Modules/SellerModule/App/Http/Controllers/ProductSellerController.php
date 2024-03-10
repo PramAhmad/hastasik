@@ -16,16 +16,21 @@ class ProductSellerController extends Controller
      */
     public function index()
     {
-        $data = DB::connection('mongodb')->collection('products')->where('seller_id', Auth::user()->id)->get();
-        if ($data->count() >= 0) {
-            return response()->json([
-                "message" => "success",
-                "data" => $data,
-                "status" => 200
-            ]);
-        } else {
-            return response()->json(["message" => "error", "data" => "data not found", "status" => 404]);
-        }
+    $id = auth()->user()->id;
+  
+    $data = DB::connection('mongodb')
+    ->collection('products')
+    ->where('seller_id',"1")
+    ->get();
+
+$response = [
+    'message' => 'success',
+    'data' => $data,
+    'status' => 200,
+];
+
+return response()->json($response);
+
     }
 
     /**
@@ -56,7 +61,7 @@ class ProductSellerController extends Controller
 
         $data = DB::connection('mongodb')->collection('products')->insert([
             "nama_produk" => $request->nama_produk,
-            "seller_id" => Auth::user()->id,
+            "seller_id" => auth()->user()->id,
             "harga" => $request->harga,
             "deskripsi" => $request->deskripsi,
             "stok" => $request->stok,
@@ -135,7 +140,7 @@ class ProductSellerController extends Controller
 
         $data = DB::connection('mongodb')->collection('products')->where('_id', $id)->update([
             "nama_produk" => $request->nama_produk,
-            "seller_id" => Auth::user()->id,
+            "seller_id" => auth()->user()->id,
             "harga" => $request->harga,
             "deskripsi" => $request->deskripsi,
             "stok" => $request->stok,
@@ -143,6 +148,7 @@ class ProductSellerController extends Controller
             "category" => $request->category,
             "updated_at" => date('Y-m-d')
         ]);
+
         if($data == true){
             return response()->json([
                 "message" => "success",

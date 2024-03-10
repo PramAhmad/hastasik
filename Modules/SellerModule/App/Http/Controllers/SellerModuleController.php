@@ -28,10 +28,24 @@ class SellerModuleController extends Controller
                 'kecamatan' => 'required',
                 'kelurahan' => 'required',
                 'alamat' => 'required',
+                'foto' => 'required',
             ]);
         } catch (\Throwable $th) {
             return response()->json(["message" => "error", "data" => "data not valid", "status" => 400]);
         }
+        $file = $request->file('foto');
+        // split space to _
+        $fileName = time() . '_' . str_replace(' ', '_', $file->getClientOriginalName());
+        // upload fil ke storage folder sellerfoto
+        $file->storeAs('sellerfoto', $fileName, 'public');
+        $fileUrl = url('storage/sellerfoto/' . $fileName);
+       if($file->getSize() > 5048){
+            return response()->json([
+                "message" => "File terlalu besar",
+                "status"     => 400,
+            ]);
+        }
+
         $seller = User::where('user_id', Auth::user()->id)->first()
             ->update([
                 'nama_toko' => $request->nama_toko,
@@ -44,6 +58,7 @@ class SellerModuleController extends Controller
                 'alamat' => $request->alamat,
                 'longitude' => $request->longitude,
                 'latitude' => $request->latitude,
+                'foto' => $fileUrl,
             ]);
         return response()->json([
             "message" => "success",
