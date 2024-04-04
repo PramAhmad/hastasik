@@ -16,6 +16,7 @@
         "mongodb/laravel-mongodb": "^4.1",
         "mongodb/mongodb": "^1.16",
         "nwidart/laravel-modules": "^10.0",
+        "predis/predis": "^2.2",
         "tymon/jwt-auth": "^2.0"
     },
     "require-dev": {

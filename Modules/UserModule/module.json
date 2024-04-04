@@ -1,0 +1,11 @@
+{
+    "name": "UserModule",
+    "alias": "usermodule",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\UserModule\\App\\Providers\\UserModuleServiceProvider"
+    ],
+    "files": []
+}

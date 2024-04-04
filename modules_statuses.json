@@ -1,4 +1,6 @@
 {
     "ProductsModule": true,
-    "SellerModule": true
+    "SellerModule": true,
+    "UserModule": true,
+    "AuthUserController": true
 }

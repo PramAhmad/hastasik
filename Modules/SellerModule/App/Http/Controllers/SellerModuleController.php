@@ -8,6 +8,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 class SellerModuleController extends Controller
 {
@@ -45,7 +46,8 @@ class SellerModuleController extends Controller
                 "status"     => 400,
             ]);
         }
-
+        // notificarion to mail usingmailing
+      
         $seller = User::where('user_id', Auth::user()->id)->first()
             ->update([
                 'nama_toko' => $request->nama_toko,

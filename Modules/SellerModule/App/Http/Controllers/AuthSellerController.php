@@ -3,6 +3,7 @@
 namespace Modules\SellerModule\App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Mail\SellerConfirmMail;
 use App\Models\User;
 use App\Notifications\SellerRegisterNotification;
 use AWS\CRT\Log;
@@ -14,6 +15,7 @@ use BackblazeB2\Client as B2Client;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Modules\SellerModule\App\Jobs\SendSellerConfirmMail;
 use Modules\SellerModule\App\Models\Seller;
 
 class AuthSellerController extends Controller
@@ -21,22 +23,28 @@ class AuthSellerController extends Controller
         
     public function RegisterSeller(Request $request)
     {
-  
-        $request->validate([
-            'name' => 'required',
-            'email' => 'required|email|unique:users',
-            'password' => 'required',
-            'nama_toko' => 'required',
-            'nama_pemilik' => 'required',
-            'no_hp' => 'required',
-            'foto' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'deskripsi' => 'required',
-            'kota' => 'required',
-            'kecamatan' => 'required',
-            'kelurahan' => 'required',
-            'alamat' => 'required',
-
-        ]);
+     
+        try{
+            $request->validate([
+                'name' => 'required',
+                'email' => 'required|email|unique:users',
+                'password' => 'required',
+                'nama_toko' => 'required',
+                'nama_pemilik' => 'required',
+                'no_hp' => 'required',
+                'foto' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                'deskripsi' => 'required',
+                'kota' => 'required',
+                'kecamatan' => 'required',
+                'kelurahan' => 'required',
+                'alamat' => 'required',
+                'longitude' => 'required',
+                'latitude' => 'required',
+            ]
+        );
+        }catch(\Throwable $th){
+            return response()->json(["message" => "error", "data" => "data not valid", "status" => 400]);
+        }
 
         $file = $request->file('foto');
         // split space to _ 
@@ -45,7 +53,7 @@ class AuthSellerController extends Controller
         $file->storeAs('sellerfoto', $fileName, 'public');
         $fileUrl = url('storage/sellerfoto/' . $fileName);
         // validate size file
-        if ($file->getSize() > 2048) {
+        if ($file->getSize() > 6048) {
             return response()->json([
                 "message" => "File terlalu besar",
                 "status"     => 400,
@@ -74,19 +82,30 @@ class AuthSellerController extends Controller
             'latitude' => $request->latitude,
             'status' => 0,
         ]);
-        // validate gagal create seller
-        if (!$seller) {
+        // validate gagal create
+        if (!$user || !$seller) {
             return response()->json([
-                "message" => "Gagal membuat seller",
-                "status" => 400,
+                "message" => "error",
+                "data" => "gagal",
+                "status" => 400
             ]);
         }
-        // Realtime notification to admin in web
-        return response()->json([
-            "message" => "Tunggu Konfirmasi dari admin",
-            "data" => $seller,
-            "status" => 200,
-        ]);
+  
+        SendSellerConfirmMail::dispatch($seller);
+        if($user && $seller){
+            return response()->json([
+                "message" => "success",
+                "data" => $seller,
+                "status" => 200
+            ]);
+        }
+        else{
+            return response()->json([
+                "message" => "error",
+                "data" => "gagal",
+                "status" => 400
+            ]);
+        }
     }
 
 
