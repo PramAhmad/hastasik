@@ -31,3 +31,8 @@ Route::middleware(['auth:sanctum','customer'])->group(function () {
     Route::post('/customer/alamat/{id}', 'Modules\UserModule\App\Http\Controllers\AlamatCustomerController@update');
     Route::delete('/customer/alamat/{id}', 'Modules\UserModule\App\Http\Controllers\AlamatCustomerController@destroy');
 });
+
+// review
+Route::middleware(['auth:sanctum','customer'])->group(function () {
+    Route::post('/customer/review', 'Modules\UserModule\App\Http\Controllers\ReviewUserController@PostReview');
+});
