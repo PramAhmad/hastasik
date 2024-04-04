@@ -9,7 +9,8 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Modules\UserModule\App\Models\Client;
+
+use Modules\UserModule\App\Models\Customer;
 
 class AuthUserController extends Controller
 {
@@ -20,11 +21,8 @@ class AuthUserController extends Controller
                 'name' => 'required',
                 'email' => 'required|email',
                 'password' => 'required',
-                'phone' => 'required',
-                'address' => 'required',
-                'city' => 'required',
-                'province' => 'required',
-                'postal_code' => 'required',
+                'phone_number' => 'required',
+               'nama_lengkap'=>'required',
                 'photo' => 'required'
             ]);
         } catch (\Throwable $th) {
@@ -40,7 +38,12 @@ class AuthUserController extends Controller
                 "status"     => 400,
             ]);
         }
-
+        // validate jika email sudah di gunakan
+        if(User::where('email', $validate['email'])->first()){
+            return response()->json([
+                'message' => 'Email Sudah Terdaftar'
+            ], 400);
+        }
         $user = User::create([
             'name' => $validate['name'],
             'email' => $validate['email'],
@@ -49,13 +52,10 @@ class AuthUserController extends Controller
           
         ]);
 
-        $customer = Client::create([
+        $customer = Customer::create([
             'user_id' => $user->id,
-            'phone_number' => $validate['phone'],
-            'address' => $validate['address'],
-            'city' => $validate['city'],
-            'province' => $validate['province'],
-            'postal_code' => $validate['postal_code'],
+            'phone_number' => $validate['phone_number'],
+           'nama_lengkap'=>$validate['nama_lengkap'],  
             'photo' => $fileUrl
         ]);
      
@@ -90,7 +90,7 @@ class AuthUserController extends Controller
         }
         if($user->role != 'customer'){
             return response()->json([
-                'message' => 'Login Failed'
+                'message' => 'Kamu Bukan Customer'
             ], 400);
         }
         $token = $user->createToken('token')->plainTextToken;

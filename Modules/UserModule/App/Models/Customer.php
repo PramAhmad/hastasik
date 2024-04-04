@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Modules\UserModule\Database\factories\ClientFactory;
 
-class Client extends Model
+class Customer extends Model
 {
     use HasFactory;
 
@@ -16,10 +16,7 @@ class Client extends Model
     protected $fillable = [
         'user_id',
         'phone_number',
-        'address',
-        'city',
-        'province',
-        'postal_code',
+    'nama_lengkap',
         'photo'
 
     ];
