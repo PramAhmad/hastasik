@@ -2,5 +2,6 @@
     "ProductsModule": true,
     "SellerModule": true,
     "UserModule": true,
-    "AuthUserController": true
+    "AuthUserController": true,
+    "ReviewUserController": true
 }

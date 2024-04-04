@@ -81,6 +81,7 @@ class AuthUserController extends Controller
         ]);
         if(Auth::attempt($request->only('email', 'password'))){
             $user = User::where('email', $validate['email'])->first();
+            
             $token = $user->createToken('token')->plainTextToken;
             if(!$user || !Hash::check($validate['password'], $user->password)){
                 return response()->json([

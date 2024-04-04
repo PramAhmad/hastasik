@@ -13,7 +13,24 @@ class AlamatCustomer extends Model
     /**
      * The attributes that are mass assignable.
      */
-    protected $fillable = [];
+    protected $fillable = [
+
+        'customer_id',
+        'nama_penerima',
+        'nomor_telepon',
+        'alamat',
+        'kota',
+        'kecamatan',
+        'kelurahan',
+        'kode_pos',
+        'provinsi',
+        
+    ];
     
+    // ke customer
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class);
+    }
    
 }

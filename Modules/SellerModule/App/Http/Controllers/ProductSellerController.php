@@ -16,6 +16,7 @@ class ProductSellerController extends Controller
      */
     public function index()
     {
+        
         $id = auth()->user()->id;
 
         $data = DB::connection('mongodb')

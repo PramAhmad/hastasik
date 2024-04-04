@@ -7,6 +7,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Modules\UserModule\App\Models\AlamatCustomer;
+use Modules\UserModule\App\Models\Customer;
 
 class AlamatCustomerController extends Controller
 {
@@ -15,8 +16,10 @@ class AlamatCustomerController extends Controller
      */
     public function index()
     {
-        $alamat = AlamatCustomer::get()->where('customer_id', auth()->user()->id);
-        $count = AlamatCustomer::count();
+      $id = Customer::where('user_id', auth()->user()->id)->pluck("id")->first();
+   
+        $alamat = AlamatCustomer::get()->where('customer_id',$id);
+        $count = $alamat->count();
         if($alamat){
             return response()->json([
                 'success' => true,
@@ -36,15 +39,19 @@ class AlamatCustomerController extends Controller
   
     public function store(Request $request)
     {
+       $id = Customer::where('user_id', auth()->user()->id)->pluck("id")->first();
+      
         try{
             $request->validate([
                 'nama_penerima' => 'required',
-                'no_hp' => 'required',
+                'nomor_telepon' => 'required',
                 'alamat' => 'required',
                 'kode_pos' => 'required',
                 'kota' => 'required',
+                'kecamatan' => 'required', 
+                'kelurahan' => 'required',
                 'provinsi' => 'required',
-                'customer_id' => 'required'
+               
             ]);
         } catch (\Throwable $th) {
             return response()->json([
@@ -56,12 +63,14 @@ class AlamatCustomerController extends Controller
 
         $alamat = AlamatCustomer::create([
             'nama_penerima' => $request->nama_penerima,
-            'no_hp' => $request->no_hp,
+            'nomor_telepon' => $request->nomor_telepon,
             'alamat' => $request->alamat,
             'kode_pos' => $request->kode_pos,
             'kota' => $request->kota,
+            'kecamatan' => $request->kecamatan,
+            'kelurahan' => $request->kelurahan,
             'provinsi' => $request->provinsi,
-            'customer_id' => $request->customer_id
+            'customer_id' =>  $id
         ]);
 
         return response()->json([
@@ -96,40 +105,22 @@ class AlamatCustomerController extends Controller
 
     public function update(Request $request, $id)
     {
-        try{
-            $request->validate([
-                'nama_penerima' => 'required',
-                'no_hp' => 'required',
-                'alamat' => 'required',
-                'kode_pos' => 'required',
-                'kota' => 'required',
-                'provinsi' => 'required',
-                'customer_id' => 'required'
-            ]);
-        } catch (\Throwable $th) {
+        $alamat = AlamatCustomer::find($id);
+       
+        if($alamat){
+            $alamat->update($request->all());
+            return response()->json([
+                'success' => true,
+                'message' => 'Alamat berhasil diupdate',
+                'data' => $alamat
+            ], 200);
+        } else {
             return response()->json([
                 'success' => false,
-                'message' => 'Data tidak valid',
+                'message' => 'Data Gak Ada',
                 'data' => ''
-            ], 400);
+            ], 404);
         }
-
-        $alamat = AlamatCustomer::find($id);
-        $alamat->update([
-            'nama_penerima' => $request->nama_penerima,
-            'no_hp' => $request->no_hp,
-            'alamat' => $request->alamat,
-            'kode_pos' => $request->kode_pos,
-            'kota' => $request->kota,
-            'provinsi' => $request->provinsi,
-            'customer_id' => $request->customer_id
-        ]);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Alamat berhasil diupdate',
-            'data' => $alamat
-        ], 200);
     }
 
   
