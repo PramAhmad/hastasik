@@ -11,9 +11,8 @@ use Modules\UserModule\App\Models\Customer;
 
 class AlamatCustomerController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    
+    
     public function index()
     {
       $id = Customer::where('user_id', auth()->user()->id)->pluck("id")->first();
@@ -80,9 +79,7 @@ class AlamatCustomerController extends Controller
         ], 201);
     }
 
-    /**
-     * Show the specified resource.
-     */
+
     public function show($id)
     {
         $alamat = AlamatCustomer::find($id);

@@ -21,7 +21,10 @@ class ReviewUserController extends Controller
         try {
             $validate = $request->validate($validate);
         } catch (\Throwable $th) {
-            return response()->json(["message" => "error", "data" => "data not valid", "status" => 400]);
+            return response()->json([
+                                "message" => "error", 
+                                "data" => "data gk valid", 
+                                "status" => 400]);
         }
 
         $review = DB::connection("mongodb")->collection("products")->where('_id', $validate['product_id'])->first();
@@ -48,7 +51,7 @@ class ReviewUserController extends Controller
           try {
                 $validate = $request->validate($validate);
           } catch (\Throwable $th) {
-                return response()->json(["message" => "error", "data" => "data not valid", "status" => 400]);
+                return response()->json(["pmessage" => "error", "data" => "data not valid", "status" => 400]);
           }
     
           $review = DB::connection("mongodb")->collection("products")->where('_id', $validate['product_id'])->get();

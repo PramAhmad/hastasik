@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Modules\SellerModule\App\Models\Seller;
 
 class ProductSellerController extends Controller
 {
@@ -29,8 +30,6 @@ class ProductSellerController extends Controller
         } else if ($orderByParams == 'asc') {
             $data = $data->sortBy('created_at');
         }
-
-
 
         $response = [
             'message' => 'success',
@@ -60,6 +59,7 @@ class ProductSellerController extends Controller
                 'foto.*' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
                 'diskon' => 'required',
                 'category' => 'required',
+
             ]);
         } catch (\Throwable $th) {
             return response()->json(["message" => "error", "data" => "data gk valid", "status" => 400]);
@@ -75,16 +75,21 @@ class ProductSellerController extends Controller
             $fileurl = url('storage/fotoproducts/' . $fotoName);
             $fotoNames[$index] = $fileurl;
         }
+        $afterDiskon = $request->harga - ($request->harga * $request->diskon / 100);
+        //   ambil id dan nama_toko
+        $seller = Seller::where('user_id', auth()->user()->id)->first()->only('id', 'nama_toko','foto');
 
-
+        $afterDiskon = number_format($afterDiskon, 2, ',', '.');
+        $harga = number_format($request->harga, 2, ',', '.');
         $data = DB::connection('mongodb')->collection('products')->insert([
             "nama_produk" => $request->nama_produk,
-            "seller_id" => auth()->user()->id,
-            "harga" => $request->harga,
+            "seller" => $seller,
+            "harga" => $harga,
+            "diskon" => $request->diskon,
+            "harga_diskon" => $afterDiskon,
             "deskripsi" => $request->deskripsi,
             "stok" => $request->stok,
             "foto" => $fotoNames,
-            "diskon" => $request->diskon,
             "category" => $request->category,
             "created_at" => date('Y-m-d-h-m-s'),
 

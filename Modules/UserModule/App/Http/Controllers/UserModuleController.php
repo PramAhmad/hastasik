@@ -12,6 +12,7 @@ class UserModuleController extends Controller
 {
     public function show()
     {
+
         $customer = Customer::get()->where('user_id', auth()->user()->id);
         if($customer){
             return response()->json([
@@ -25,10 +26,12 @@ class UserModuleController extends Controller
                 'data' => ''
             ], 404);
         }
+
     }
 
     public function update(Request $request, $id)
     {
+        
         $validate = $request->validate([
             'name' => 'required',
             'email' => 'required|email',
@@ -36,6 +39,7 @@ class UserModuleController extends Controller
             'nama_lengkap' => 'required',
             'photo' => 'required'
         ]);
+
         $customer = Customer::where('user_id', auth()->user()->id)->first();
         if($customer){
             $file = $request->file('photo');

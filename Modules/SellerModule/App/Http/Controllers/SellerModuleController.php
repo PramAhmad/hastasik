@@ -9,9 +9,27 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use Modules\SellerModule\App\Models\Seller;
 
 class SellerModuleController extends Controller
 {
+    public function getSellerInfobyId($id)
+    {
+        $data = Seller::where('id', $id)->first();
+        if ($data) {
+            return response()->json([
+                'message' => 'success',
+                'data' => $data,
+                'status' => 200,
+            ]);
+        } else {
+            return response()->json([
+                'message' => 'data not found',
+                'status' => 404,
+            ]);
+        }
+    }
+
     public function ShowSeller()
     {
         $data = Auth::user();

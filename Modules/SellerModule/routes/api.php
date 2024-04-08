@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Modules\SellerModule\App\Http\Controllers\AuthSellerController;
 use Modules\SellerModule\App\Http\Controllers\ProductSellerController;
+use Modules\SellerModule\App\Http\Controllers\SellerModuleController;
 
 /*
     |--------------------------------------------------------------------------
@@ -35,3 +36,6 @@ Route::middleware(['auth:sanctum', 'seller'])->group(function () {
     Route::put('/seller/products/{id}', [ProductSellerController::class, 'update']);
     Route::delete('/seller/products/{id}', [ProductSellerController::class, 'destroy']);
 });
+
+// route seller info
+Route::get("/seller/info/{id}", [SellerModuleController::class, 'getSellerInfobyId']);

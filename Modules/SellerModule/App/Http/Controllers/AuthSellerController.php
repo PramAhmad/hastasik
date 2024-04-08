@@ -156,7 +156,7 @@ class AuthSellerController extends Controller
         } else {
             return response()->json([
                 "message" => "error",
-                "data" => "unauthorized",
+                "data" => "Ada Kesalahan Saat Login",
                 "status" => 401,
             ]);
         }
