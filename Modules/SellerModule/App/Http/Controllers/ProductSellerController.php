@@ -79,8 +79,8 @@ class ProductSellerController extends Controller
         //   ambil id dan nama_toko
         $seller = Seller::where('user_id', auth()->user()->id)->first()->only('id', 'nama_toko','foto');
 
-        $afterDiskon = number_format($afterDiskon, 2, ',', '.');
-        $harga = number_format($request->harga, 2, ',', '.');
+        $afterDiskon = number_format($afterDiskon, 0, ',', '.');
+        $harga = number_format($request->harga, 0, ',', '.');
         $data = DB::connection('mongodb')->collection('products')->insert([
             "nama_produk" => $request->nama_produk,
             "seller" => $seller,
