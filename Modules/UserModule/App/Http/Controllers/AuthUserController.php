@@ -90,7 +90,7 @@ class AuthUserController extends Controller
             }
         }else{
             return response()->json([
-                'message' => 'Email Tidak Terdaftar'
+                'message' => 'Pastikan Email Dan Pasword Benar'
             ], 401);
         }
         if($user->role != 'customer'){
