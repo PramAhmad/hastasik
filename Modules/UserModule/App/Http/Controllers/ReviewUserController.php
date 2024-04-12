@@ -27,21 +27,27 @@ class ReviewUserController extends Controller
                                 "status" => 400]);
         }
 
-        $review = DB::connection("mongodb")->collection("products")->where('_id', $validate['product_id'])->first();
-     
+        $productId = $validate['product_id'];
+
+        $review = DB::connection("mongodb")->collection("products")->where('_id', $productId)->first();
+        
+        if (!isset($review['review'])) {
+            $review['review'] = [];
+        }    
         $review['review'][] = [
             'customer_id' => Customer::where('user_id', auth()->user()->id)->first(),
             'rating' => $validate['rating'],
             'review' => $validate['review']
         ];
-
-       
-        DB::connection("mongodb")->collection("products")->where('_id', $validate['product_id'])->update($review);
+ 
+        DB::connection("mongodb")->collection("products")->where('_id', $productId)->update($review);
+        
         return response()->json([
             'message' => 'Review Berhasil',
             'data' => $review,
             'status' => 200
-        ]); 
+        ]);
+        
    }
 
     public function GetReview(Request $request){
