@@ -35,7 +35,8 @@ class ReviewUserController extends Controller
             $review['review'] = [];
         }    
         $review['review'][] = [
-            'customer' =>$customer ,
+            'nama_customer' =>$customer->nama_lengkap ,
+            'photo_customer' => $customer->photo,
             'rating' => $validate['rating'],
             'review' => $validate['review']
         ];
