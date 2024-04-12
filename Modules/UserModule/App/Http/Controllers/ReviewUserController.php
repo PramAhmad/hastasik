@@ -35,7 +35,7 @@ class ReviewUserController extends Controller
             $review['review'] = [];
         }    
         $review['review'][] = [
-            'customer_id' => Customer::where('user_id', auth()->user()->id)->first(),
+            'customer' => Customer::select("nama_lengkap","photo")->where('user_id', auth()->user()->id)->first(),
             'rating' => $validate['rating'],
             'review' => $validate['review']
         ];
