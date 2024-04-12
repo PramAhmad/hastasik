@@ -30,7 +30,7 @@ class ReviewUserController extends Controller
         $review = DB::connection("mongodb")->collection("products")->where('_id', $validate['product_id'])->first();
      
         $review['review'][] = [
-            'customer_id' => Customer::where('user_id', auth()->user()->id)->first(),
+            'customer_id' => Customer::where('user_id', auth()->user()->id),
             'rating' => $validate['rating'],
             'review' => $validate['review']
         ];
