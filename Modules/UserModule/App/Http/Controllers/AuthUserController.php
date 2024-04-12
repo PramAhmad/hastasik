@@ -88,11 +88,10 @@ class AuthUserController extends Controller
                     'message' => 'Password Salah'
                 ], 402);
             }
-        }
-        if(!$user){
+        }else{
             return response()->json([
                 'message' => 'Email Tidak Terdaftar'
-            ], 400);
+            ], 401);
         }
         if($user->role != 'customer'){
             return response()->json([
