@@ -23,6 +23,7 @@ Route::post('logout', function (Request $request) {
     return response()->json(["message" => "success","data" => "logout success","status" => 200]);
 });
 Route::get('products', [ProductsModuleController::class, 'index']);
+Route::get('products/{id}', [ProductsModuleController::class, 'show']);
 // Route::post('products/create', [ProductsModuleController::class, 'store']);
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();

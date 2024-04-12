@@ -32,4 +32,26 @@ class ProductsModuleController extends Controller
             'status' => 200,
         ]);
     }
+    public function show($id)
+{
+    $data = DB::connection('mongodb')
+        ->collection('products')
+        ->where('_id', $id)
+        ->first();
+        if (!$data) {
+            return response()->json([
+                'message' => 'error',
+                'data' => 'id tidak ditemukan',
+                'status' => 404,
+            ]);
+        }else{
+            return response()->json([
+                'message' => 'success',
+                'data' => $data,
+                'status' => 200,
+            ]);
+        }
+
+    
+}
 }
