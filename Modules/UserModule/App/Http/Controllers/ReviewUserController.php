@@ -40,8 +40,16 @@ class ReviewUserController extends Controller
             'rating' => $validate['rating'],
             'review' => $validate['review']
         ];
- 
-        DB::connection("mongodb")->collection("products")->where('_id', $productId)->update($review);
+        $avgreview = 0;
+            foreach ($review['review'] as $key => $value) {
+                  $avgreview += $value['rating'];
+            }
+      $avgreview = $avgreview / count($review['review']);
+      $review['avg_review'] = $avgreview;
+        DB::connection("mongodb")->collection("products")->where('_id', $productId)->update([
+            'review' => $review['review'],
+            "avg_review" => $avgreview,
+        ]);
         
         return response()->json([
             'message' => 'Review Berhasil',
