@@ -32,6 +32,19 @@ class ProductsModuleController extends Controller
             'status' => 200,
         ]);
     }
+    // product by category
+    public function productByCategory($category)
+    {
+        $data = DB::connection('mongodb')
+            ->collection('products')
+            ->where('category', $category)
+            ->get();
+        return response()->json([
+            'message' => 'success',
+            'data' => $data,
+            'status' => 200,
+        ]);
+    }
     public function show($id)
 {
     $data = DB::connection('mongodb')

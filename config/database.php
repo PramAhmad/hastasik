@@ -36,7 +36,7 @@ return [
     'connections' => [
         'mongodb' => [
             'driver' => 'mongodb',
-            'dsn' => env('DB_URI', 'mongodb+srv://pramuditaadit2810:tasikmalaya123..@hastasikcluster0.xvfcac3.mongodb.net/?retryWrites=true&w=majority&appName=hastasikCluster0'),
+            'dsn' => env('MONGO_URL', 'mongodb+srv://pramuditaadit2810:tasikmalaya123..@hastasikcluster0.xvfcac3.mongodb.net/?retryWrites=true&w=majority&appName=hastasikCluster0'),
             'database' => 'hastasik',
             'options' => [
                 'tls' => true
