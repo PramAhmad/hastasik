@@ -39,11 +39,19 @@ class ProductsModuleController extends Controller
             ->collection('products')
             ->where('category', $category)
             ->get();
-        return response()->json([
-            'message' => 'success',
-            'data' => $data,
-            'status' => 200,
-        ]);
+       if (!$data) {
+            return response()->json([
+                'message' => 'error',
+                'data' => 'category tidak ditemukan',
+                'status' => 404,
+            ]);
+        }else{
+            return response()->json([
+                'message' => 'success',
+                'data' => $data,
+                'status' => 200,
+            ]);
+        }
     }
     public function show($id)
 {

@@ -36,3 +36,10 @@ Route::middleware(['auth:sanctum','customer'])->group(function () {
 Route::middleware(['auth:sanctum','customer'])->group(function () {
     Route::post('/customer/review', 'Modules\UserModule\App\Http\Controllers\ReviewUserController@PostReview');
 });
+
+
+// profile
+Route::middleware(['auth:sanctum','customer'])->group(function () {
+    Route::get('/customer/profile', 'Modules\UserModule\App\Http\Controllers\UserModuleController@show');
+    Route::post('/customer/profile/{id}', 'Modules\UserModule\App\Http\Controllers\UserModuleController@update');
+});
