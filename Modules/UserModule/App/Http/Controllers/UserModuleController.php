@@ -13,7 +13,7 @@ class UserModuleController extends Controller
     public function show()
     {
 
-        $customer = Customer::get()->where('user_id', auth()->user()->id);
+        $customer = Customer::get()->where('user_id', auth()->user()->id)->first();
         if($customer){
             return response()->json([
                 'success' => true,

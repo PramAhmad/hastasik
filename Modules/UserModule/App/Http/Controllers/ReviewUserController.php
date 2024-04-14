@@ -29,8 +29,12 @@ class ReviewUserController extends Controller
 
         $productId = $validate['product_id'];
 
-        $review = DB::connection("mongodb")->collection("products")->where('_id', $productId)->first();
-        $customer = Customer::select("nama_lengkap","photo")->where('user_id', auth()->user()->id)->first();
+        $review = DB::connection("mongodb")
+                    ->collection("products")
+                    ->where('_id', $productId)->first();
+        $customer = Customer::select("nama_lengkap","photo")
+                    ->where('user_id', auth()->user()->id)
+                    ->first();
         if (!isset($review['review'])) {
             $review['review'] = [];
         }    
@@ -43,10 +47,12 @@ class ReviewUserController extends Controller
         $avgreview = 0;
             foreach ($review['review'] as $key => $value) {
                   $avgreview += $value['rating'];
-            }
+            }           
       $avgreview = $avgreview / count($review['review']);
       $review['avg_review'] = $avgreview;
-        DB::connection("mongodb")->collection("products")->where('_id', $productId)->update([
+        DB::connection("mongodb")->collection("products")
+        ->where('_id', $productId)
+        ->update([
             'review' => $review['review'],
             "avg_review" => $avgreview,
         ]);
