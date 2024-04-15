@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Storage;
 use Modules\UserModule\App\Models\Customer;
 
 class UserModuleController extends Controller
@@ -31,33 +32,47 @@ class UserModuleController extends Controller
 
     public function update(Request $request)
     {
-        
         $validate = $request->validate([
-         
             'phone_number' => 'required',
             'nama_lengkap' => 'required',
-            'photo' => 'required'
+            'photo' => 'nullable|image|max:6048', 
         ]);
-
+    
         $customer = Customer::where('user_id', auth()->user()->id)->first();
-        if($customer){
-            $file = $request->file('photo');
-            $fileName = time() . '_' . str_replace(' ', '_', $file->getClientOriginalName());
-            $file->storeAs('clientphoto', $fileName, 'public');
-            $fileUrl = url('storage/clientphoto/' . $fileName);
-            if ($file->getSize() > 6048) {
-                return response()->json([
-                    "message" => "File terlalu besar",
-                    "status"     => 400,
+        if ($customer) {
+            if ($request->hasFile('photo')) { 
+                $file = $request->file('photo');
+                $fileName = time() . '_' . str_replace(' ', '_', $file->getClientOriginalName());
+                $file->storeAs('clientphoto', $fileName, 'public');
+                $fileUrl = url('storage/clientphoto/' . $fileName);
+    
+                if ($file->getSize() > 6048) {
+                    return response()->json([
+                        "message" => "File terlalu besar",
+                        "status" => 400,
+                    ]);
+                }
+    
+               
+                if ($customer->photo) {
+               
+                    $fileNameToDelete = basename($customer->photo);
+               
+                    Storage::disk('public')->delete('clientphoto/' . $fileNameToDelete);
+                }
+    
+                $customer->update([
+                    'phone_number' => $validate['phone_number'],
+                    'nama_lengkap' => $validate['nama_lengkap'],
+                    'photo' => $fileUrl
+                ]);
+            } else {
+                $customer->update([
+                    'phone_number' => $validate['phone_number'],
+                    'nama_lengkap' => $validate['nama_lengkap'],
                 ]);
             }
-            $customer->update([
-         
-                'phone_number' => $validate['phone_number'],
-                'nama_lengkap' => $validate['nama_lengkap'],
-                'photo' => $fileUrl
-            ]);
-
+    
             return response()->json([
                 'success' => true,
                 'message' => 'Data berhasil diupdate',
@@ -71,4 +86,5 @@ class UserModuleController extends Controller
             ], 404);
         }
     }
+    
 }
