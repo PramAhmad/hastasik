@@ -33,8 +33,7 @@ class UserModuleController extends Controller
     {
         
         $validate = $request->validate([
-            'name' => 'required',
-            'email' => 'required|email',
+         
             'phone_number' => 'required',
             'nama_lengkap' => 'required',
             'photo' => 'required'
@@ -53,8 +52,7 @@ class UserModuleController extends Controller
                 ]);
             }
             $customer->update([
-                'name' => $validate['name'],
-                'email' => $validate['email'],
+         
                 'phone_number' => $validate['phone_number'],
                 'nama_lengkap' => $validate['nama_lengkap'],
                 'photo' => $fileUrl
