@@ -55,9 +55,7 @@ class UserModuleController extends Controller
     
                
                 if ($customer->photo) {
-               
-                    $fileNameToDelete = basename($customer->photo);
-               
+                    $fileNameToDelete = basename($customer->photo);               
                     Storage::disk('public')->delete('clientphoto/' . $fileNameToDelete);
                 }
     
