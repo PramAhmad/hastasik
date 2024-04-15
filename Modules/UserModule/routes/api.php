@@ -43,3 +43,8 @@ Route::middleware(['auth:sanctum','customer'])->group(function () {
     Route::get('/customer/profile', 'Modules\UserModule\App\Http\Controllers\UserModuleController@show');
     Route::put('/customer/profile/update', 'Modules\UserModule\App\Http\Controllers\UserModuleController@update');
 });
+
+// akun setting
+Route::middleware(['auth:sanctum','customer'])->group(function () {
+    Route::put('/customer/setting/update', 'Modules\UserModule\App\Http\Controllers\UserModuleController@updateaccount');
+});

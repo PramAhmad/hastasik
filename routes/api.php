@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProductsModuleController;
+use App\Http\Controllers\RajaOngkirApi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -32,3 +33,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::get("noauth", function(){
     return response()->json(["message" => "error","data" => "unauthorized","status" => 401]);
 })->name("noauth");
+
+
+// raja ongkir
+Route::get('rajaongkir/province', [RajaOngkirApi::class, 'getProvince']);
+Route::get('rajaongkir/city', [RajaOngkirApi::class, 'getCity']);
+Route::post('rajaongkir/cost', [RajaOngkirApi::class, 'getCost']);
