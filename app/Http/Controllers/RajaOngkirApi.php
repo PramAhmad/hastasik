@@ -18,12 +18,19 @@ class RajaOngkirApi extends Controller
 
     }
 
-    public function getCity()
-    {
-        $response =  Http::withHeaders([
-            'key' => env('RAJAONGKIR_API_KEY')])
-            ->get('https://api.rajaongkir.com/starter/city')
-            ->throw();
+    public function getCity(Request $request){
+        if($request->province_id){
+            $response =  Http::withHeaders([
+                'key' => env('RAJAONGKIR_API_KEY')])
+                ->get('https://api.rajaongkir.com/starter/city?province='.$request->province_id)
+                ->throw();
+        }else{
+            $response =  Http::withHeaders([
+                'key' => env('RAJAONGKIR_API_KEY')])
+                ->get('https://api.rajaongkir.com/starter/city')
+                ->throw();
+        }
+    //    jika
 
         return response()->json($response->json());
     }
