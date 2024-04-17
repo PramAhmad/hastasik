@@ -50,6 +50,8 @@ class AlamatCustomerController extends Controller
                 'kecamatan' => 'required', 
                 'kelurahan' => 'required',
                 'provinsi' => 'required',
+                "province_id" => 'required',
+                "city_id" => 'required',
                
             ]);
         } catch (\Throwable $th) {
@@ -69,6 +71,8 @@ class AlamatCustomerController extends Controller
             'kecamatan' => $request->kecamatan,
             'kelurahan' => $request->kelurahan,
             'provinsi' => $request->provinsi,
+            'province_id' => $request->province_id,
+            'city_id' => $request->city_id,
             'customer_id' =>  $id
         ]);
 

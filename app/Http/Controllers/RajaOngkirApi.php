@@ -20,7 +20,7 @@ class RajaOngkirApi extends Controller
 
     public function getCity(Request $request)
     {
-      
+        // Validasi apakah parameter 'province' telah diberikan
         $request->validate([
             'province' => 'required',
         ]);

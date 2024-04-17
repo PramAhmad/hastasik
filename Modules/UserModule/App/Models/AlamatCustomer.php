@@ -24,6 +24,8 @@ class AlamatCustomer extends Model
         'kelurahan',
         'kode_pos',
         'provinsi',
+        'province_id',
+        'city_id',
         
     ];
     
