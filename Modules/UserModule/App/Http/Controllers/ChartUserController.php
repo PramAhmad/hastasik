@@ -54,14 +54,34 @@ class ChartUserController extends Controller
         ]); 
     }
 
-    public function ShowChart(Request $request){
+    public function ShowChart(){
         $chart = DB::connection("mongodb")->collection("chart")
         ->where('customer_id', Customer::where('user_id', auth()->user()->id)->pluck("id")->first())
         ->first();
+        // ambil product id jadi product
+        $product = [];
+        foreach ($chart['product'] as $key => $value) {
+            $product[] = DB::connection("mongodb")->collection("products")
+                ->where('_id', $value['product_id'])
+                ->first();
+        }
+        $chart['product'] = $product;
         return response()->json([
             'message' => 'Chart Berhasil Di Tampilkan',
             'data' => $chart,
             'status' => 200
         ]);
+    }
+
+    public function DeleteChart($id)  {
+    //  delete chart id
+        DB::connection("mongodb")->collection("chart")
+            ->where('_id', $id)
+            ->delete();
+        return response()->json([
+            'message' => 'Chart Berhasil Di Hapus',
+            'status' => 200
+        ]);
+        
     }
 }
