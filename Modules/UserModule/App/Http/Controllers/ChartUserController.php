@@ -84,8 +84,9 @@ class ChartUserController extends Controller
         foreach ($products as $product) {
             $product['harga_diskon'] = str_replace(".", "", $product['harga_diskon']);
             $chart['subtotal'] += $product['harga_diskon'] * $product['qty'];
+
         }
-    
+        $chart['subtotal'] = number_format($chart['subtotal'], 0, ',', '.');
         return response()->json([
             'message' => 'Chart Berhasil Di Tampilkan',
             'data' => $chart,
