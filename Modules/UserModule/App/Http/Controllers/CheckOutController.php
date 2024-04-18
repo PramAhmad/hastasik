@@ -39,7 +39,7 @@ class CheckOutController extends Controller
                 ];
             }
 
-            DB::connection("mongodb")->collection("transactions")->insertMany($transactions);
+            DB::connection("mongodb")->collection("transactions")->insert($transactions);
     
          
             return response()->json(['message' => 'Checkout berhasil'], 200);
