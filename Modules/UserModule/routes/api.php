@@ -54,6 +54,7 @@ Route::middleware(['auth:sanctum','customer'])->group(function () {
 Route::middleware(['auth:sanctum','customer'])->group(function () {
     Route::post('/customer/chart', [ChartUserController::class, 'PushChart']);
     Route::get('/customer/chart', [ChartUserController::class, 'ShowChart']);
+    Route::delete('/customer/chart/{id}', [ChartUserController::class, 'DeleteChart']);
 });
 
 // checkout
