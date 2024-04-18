@@ -36,25 +36,43 @@ class ChartUserController extends Controller
     
     public function ShowChart(){
         $customerId = Customer::where('user_id', auth()->user()->id)->pluck("id")->first();
-    
-        $chart = DB::connection("mongodb")->collection("chart")
+        
+      
+        $charts = DB::connection("mongodb")->collection("chart")
             ->where('customer_id', $customerId)
             ->get();
-    
-        if (!$chart) {
+        
+        if ($charts->isEmpty()) {
             return response()->json([
                 'message' => 'Tidak ada produk dalam chart',
                 'status' => 400
             ]);
         }
-        $chart['subtotal'] = $chart['product']['harga_diskon'] * $chart['qty'];
-        $chart['subtotal'] = number_format($chart['subtotal'], 0, ',', '.');
+    
+        $total = 0;
+    
+        // Iterasi chart
+        foreach ($charts as &$chart) {
+            
+            $subtotal = 0;
+            foreach ($chart['product'] as $product) {
+                $subtotal += $product['harga_diskon'] * $product['qty'];
+            }
+            $chart['subtotal'] = number_format($subtotal, 0, ',', '.');
+
+            $total += $subtotal;
+        }
+    
+        $total = number_format($total, 0, ',', '.');
+    
         return response()->json([
             'message' => 'Chart Berhasil Di Tampilkan',
-            'data' => $chart,
+            'data' => $charts,
+            'total_subtotal' => $total,
             'status' => 200
         ]);
     }
+    
     
 
     public function DeleteChart($id)  {
