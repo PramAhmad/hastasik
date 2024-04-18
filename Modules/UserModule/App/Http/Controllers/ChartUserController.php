@@ -22,7 +22,8 @@ class ChartUserController extends Controller
             return response()->json(["message" => "error", "data" => "data not valid", "status" => 400]);
         }
 
-        $chart = DB::connection("mongodb")->collection("chart")->where('customer_id', Customer::where('user_id', auth()->user()->id)->pluck("id")->first())->first();
+        
+        $chart = DB::connection("mongodb")->collection("chart")->where('customer_id', Customer::where('user_id', auth()->user()->id))->first();
         if($chart){
             $chart['product'][] = [
                 'product_id' => $validate['product_id'],
