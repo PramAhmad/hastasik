@@ -79,6 +79,11 @@ class ChartUserController extends Controller
             }
         }
         $chart['product'] = $products;
+        // subtotal chart
+        $chart['subtotal'] = 0;
+        foreach ($products as $product) {
+            $chart['subtotal'] += $product['price'] * $product['qty'];
+        }
     
         return response()->json([
             'message' => 'Chart Berhasil Di Tampilkan',
