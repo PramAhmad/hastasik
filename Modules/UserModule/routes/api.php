@@ -51,4 +51,6 @@ Route::middleware(['auth:sanctum','customer'])->group(function () {
 });
 
 // chart
-Route::post('/customer/chart', [ChartUserController::class, 'PushChart']);
+Route::middleware(['auth:sanctum','customer'])->group(function () {
+    Route::post('/customer/chart', [ChartUserController::class, 'PushChart']);
+});
