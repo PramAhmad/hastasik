@@ -21,16 +21,21 @@ class ChartUserController extends Controller
         } catch (\Throwable $th) {
             return response()->json(["message" => "error", "data" => "data not valid", "status" => 400]);
         }
-
+        $chart = DB::connection("mongodb")->collection("chart")
+        ->where('customer_id', Customer::where('user_id', auth()->user()->id)->pluck("id")->first())
+        ->first();
+    
+    if ($chart) {
+        $chart['product'][] = [
+            'product_id' => $validate['product_id'],
+            'qty' => $validate['qty']
+        ];
+        DB::connection("mongodb")->collection("chart")
+            ->where('customer_id', Customer::where('user_id', auth()->user()->id)->pluck("id")->first())
+            ->update($chart);
+    }
         
-        $chart = DB::connection("mongodb")->collection("chart")->where('customer_id', Customer::where('user_id', auth()->user()->id))->first();
-        if($chart){
-            $chart['product'][] = [
-                'product_id' => $validate['product_id'],
-                'qty' => $validate['qty']
-            ];
-            DB::connection("mongodb")->collection("chart")->where('customer_id', Customer::where('user_id', auth()->user()->id)->pluck("id")->first())->update($chart);
-        } else {
+         else {
             $chart = [
                 'customer_id' => Customer::where('user_id', auth()->user()->id)->pluck("id")->first(),
                 'product' => [
