@@ -58,6 +58,7 @@ class ChartUserController extends Controller
         $chart = DB::connection("mongodb")->collection("chart")
         ->where('customer_id', Customer::where('user_id', auth()->user()->id)->pluck("id")->first())
         ->first();
+  
         // ambil product id jadi product
         $product = [];
         foreach ($chart['product'] as $key => $value) {
@@ -65,7 +66,14 @@ class ChartUserController extends Controller
                 ->where('_id', $value['product_id'])
                 ->first();
         }
-        $chart['product'] = $product;
+           // slect qty dan product id
+           $chart['product'] = collect($chart['product'])->map(function ($item) {
+            return [
+                'qty' => $item['qty'],
+                'product_id' => $item['product_id']
+            ];
+        });;
+
         return response()->json([
             'message' => 'Chart Berhasil Di Tampilkan',
             'data' => $chart,
