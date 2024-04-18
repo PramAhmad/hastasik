@@ -54,17 +54,14 @@ class ChartUserController extends Controller
         // Iterasi chart
         foreach ($charts as &$chart) {
             $chart = json_decode(json_encode($chart), true);
-            $subtotal = 0;
-            foreach ($chart['product'] as $product) {
-                $subtotal += $product['harga_diskon'] * $product['qty'];
-            }
-            $chart['subtotal'] = number_format($subtotal, 0, ',', '.');
+            $chart['product']['_id'] = $chart['product']['_id']['$oid'];
+            $chart['product']['harga'] = number_format($chart['product']['harga'], 0, ',', '.');
+            
+            $chart['subtotal'] = $chart['product']['harga'] * $chart['qty'];
 
-            $total += $subtotal;
         }
     
-        $total = number_format($total, 0, ',', '.');
-    
+     
         return response()->json([
             'message' => 'Chart Berhasil Di Tampilkan',
             'data' => $charts,
