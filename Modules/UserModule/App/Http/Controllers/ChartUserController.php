@@ -57,6 +57,7 @@ class ChartUserController extends Controller
             $chart['product']['_id'] = $chart['product']['_id']['$oid'];
             $chart['product']['harga_diskon'] = str_replace(".", "", $chart['product']['harga_diskon']);
             $chart['subtotal'] = $chart['product']['harga_diskon'] * $chart['qty'];
+            $chart['subtotal'] = number_format($chart['subtotal'], 0, ',', '.');
             $total += $chart['subtotal'];
 
         }
