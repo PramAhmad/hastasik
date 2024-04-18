@@ -41,7 +41,7 @@ class ChartUserController extends Controller
             ->where('customer_id', $customerId)
             ->get();
     
-        if (!$chart || empty($chart['product'])) {
+        if (!$chart) {
             return response()->json([
                 'message' => 'Tidak ada produk dalam chart',
                 'status' => 400
