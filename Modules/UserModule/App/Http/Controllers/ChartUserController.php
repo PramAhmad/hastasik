@@ -53,7 +53,7 @@ class ChartUserController extends Controller
     
         // Iterasi chart
         foreach ($charts as &$chart) {
-            $chart = $chart->toArray();
+            $chart = json_decode(json_encode($chart), true);
             $subtotal = 0;
             foreach ($chart['product'] as $product) {
                 $subtotal += $product['harga_diskon'] * $product['qty'];
