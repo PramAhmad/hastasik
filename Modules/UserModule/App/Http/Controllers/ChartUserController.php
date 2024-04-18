@@ -34,8 +34,8 @@ class ChartUserController extends Controller
             ->where('customer_id', Customer::where('user_id', auth()->user()->id)->pluck("id")->first())
             ->update($chart);
     }
-        
-         else {
+    
+         else  {
             $chart = [
                 'customer_id' => Customer::where('user_id', auth()->user()->id)->pluck("id")->first(),
                 'product' => [
@@ -52,5 +52,16 @@ class ChartUserController extends Controller
             'data' => $chart,
             'status' => 200
         ]); 
+    }
+
+    public function ShowChart(Request $request){
+        $chart = DB::connection("mongodb")->collection("chart")
+        ->where('customer_id', Customer::where('user_id', auth()->user()->id)->pluck("id")->first())
+        ->first();
+        return response()->json([
+            'message' => 'Chart Berhasil Di Tampilkan',
+            'data' => $chart,
+            'status' => 200
+        ]);
     }
 }
