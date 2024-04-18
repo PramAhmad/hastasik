@@ -82,6 +82,7 @@ class ChartUserController extends Controller
         // subtotal chart
         $chart['subtotal'] = 0;
         foreach ($products as $product) {
+            $product['harga_diskon'] = str_replace(".", "", $product['harga_diskon']);
             $chart['subtotal'] += $product['harga_diskon'] * $product['qty'];
         }
     
