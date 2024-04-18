@@ -21,7 +21,7 @@ class ChartUserController extends Controller
 
             $chart = [
                 'customer_id' => $customerId,
-                'product' => DB::connection("mongodb")->collection("products")->where('_id', $validate['product_id'])->get("_id","nama_produk", "harga_diskon", "foto","seller"),
+                'product' => DB::connection("mongodb")->collection("products")->where('_id', $validate['product_id'])->first(),
                 "qty" => $validate['qty'],
             ];
 
