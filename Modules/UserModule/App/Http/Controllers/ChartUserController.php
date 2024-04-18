@@ -55,31 +55,38 @@ class ChartUserController extends Controller
     }
 
     public function ShowChart(){
+        $customerId = Customer::where('user_id', auth()->user()->id)->pluck("id")->first();
+    
         $chart = DB::connection("mongodb")->collection("chart")
-        ->where('customer_id', Customer::where('user_id', auth()->user()->id)->pluck("id")->first())
-        ->first();
-  
-        // ambil product id jadi product
-        $product = [];
-        foreach ($chart['product'] as $key => $value) {
-            $product[] = DB::connection("mongodb")->collection("products")
-                ->where('_id', $value['product_id'])
-                ->first();
+            ->where('customer_id', $customerId)
+            ->first();
+    
+        if (!$chart || empty($chart['product'])) {
+            return response()->json([
+                'message' => 'Tidak ada produk dalam chart',
+                'status' => 400
+            ]);
         }
-           // slect qty dan product id
-           $chart['product'] = collect($chart['product'])->map(function ($item) {
-            return [
-                'qty' => $item['qty'],
-                'product_id' => $item['product_id']
-            ];
-        });;
-
+        $products = [];
+        foreach ($chart['product'] as $productData) {
+            $productInfo = DB::connection("mongodb")->collection("products")
+                ->where('_id', $productData['product_id'])
+                ->first();
+    
+            if ($productInfo) {
+                $productInfo['qty'] = $productData['qty'];
+                $products[] = $productInfo;
+            }
+        }
+        $chart['product'] = $products;
+    
         return response()->json([
             'message' => 'Chart Berhasil Di Tampilkan',
             'data' => $chart,
             'status' => 200
         ]);
     }
+    
 
     public function DeleteChart($id)  {
     //  delete chart id
