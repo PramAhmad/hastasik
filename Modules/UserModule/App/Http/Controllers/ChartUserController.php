@@ -21,12 +21,8 @@ class ChartUserController extends Controller
 
             $chart = [
                 'customer_id' => $customerId,
-                'product' => [
-                    [
-                        'product_id' => $validate['product_id'],
-                        'qty' => $validate['qty']
-                    ]
-                ]
+                'product' => DB::connection("mongodb")->collection("products")->where('_id', $validate['product_id'])->get("_id","nama_produk", "harga_diskon", "foto","seller"),
+                "qty" => $validate['qty'],
             ];
 
             DB::connection("mongodb")->collection("chart")->insert($chart);
@@ -51,25 +47,7 @@ class ChartUserController extends Controller
                 'status' => 400
             ]);
         }
-        $products = [];
-        foreach ($chart['product'] as $productData) {
-            $productInfo = DB::connection("mongodb")->collection("products")
-                ->where('_id', $productData['product_id'])
-                ->first();
-    
-            if ($productInfo) {
-                $productInfo['qty'] = $productData['qty'];
-                $products[] = $productInfo;
-            }
-        }
-        $chart['product'] = $products;
-        // subtotal chart
-        $chart['subtotal'] = 0;
-        foreach ($products as $product) {
-            $product['harga_diskon'] = str_replace(".", "", $product['harga_diskon']);
-            $chart['subtotal'] += $product['harga_diskon'] * $product['qty'];
-
-        }
+        $chart['subtotal'] = $chart['product']['harga_diskon'] * $chart['qty'];
         $chart['subtotal'] = number_format($chart['subtotal'], 0, ',', '.');
         return response()->json([
             'message' => 'Chart Berhasil Di Tampilkan',
