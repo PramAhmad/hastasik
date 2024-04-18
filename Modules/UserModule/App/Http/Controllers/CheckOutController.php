@@ -14,37 +14,36 @@ class CheckOutController extends Controller
 
     public function checkout(Request $request) {
         $customerId = Customer::where('user_id', auth()->user()->id)->pluck("id")->first();
-        $chart = DB::connection("mongodb")->collection("chart")->where('customer_id', $customerId)->first();
     
-        if (!$chart || empty($chart['product'])) {
+        $selectedProducts = $request->input('products');
+    
+        if (empty($selectedProducts)) {
             return response()->json([
-                'message' => 'Tidak ada produk dalam chart',
+                'message' => 'Tidak ada produk yang dipilih',
                 'status' => 400
             ]);
         }
-
-        $selectedProducts = $request->input('selected_products');
-        if (empty($selectedProducts)) {
-            $selectedProducts = $chart['product'];
-        }
     
         try {
-            $transactions = [];
+    
+            $transaction = [
+                'customer_id' => $customerId,
+                'products' => []
+            ];
+    
             foreach ($selectedProducts as $product) {
-                $transactions[] = [
-                    'customer_id' => $customerId,
-                    'product_id' => $product['product_id'],
-                    'quantity' => $product['qty'],
-                    'created_at' => now(),
+                $transaction['products'][] = [
+                    'product' => DB::connection("mongodb")->collection("products")->where('_id', $product['product_id'])->first(),
+                    'quantity' => $product['quantity']
                 ];
             }
-
-            DB::connection("mongodb")->collection("transactions")->insert($transactions);
+            DB::connection("mongodb")->collection("transactions")->insert($transaction);
     
-         
             return response()->json(['message' => 'Checkout berhasil'], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Checkout gagal', 'error' => $e->getMessage()], 500);
         }
     }
+    
+    
 }    
