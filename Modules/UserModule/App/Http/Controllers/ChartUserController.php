@@ -39,7 +39,7 @@ class ChartUserController extends Controller
     
         $chart = DB::connection("mongodb")->collection("chart")
             ->where('customer_id', $customerId)
-            ->first();
+            ->get();
     
         if (!$chart || empty($chart['product'])) {
             return response()->json([
