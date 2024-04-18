@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Modules\UserModule\App\Http\Controllers\ChartUserController;
 
 /*
     |--------------------------------------------------------------------------
@@ -48,3 +49,6 @@ Route::middleware(['auth:sanctum','customer'])->group(function () {
 Route::middleware(['auth:sanctum','customer'])->group(function () {
     Route::put('/customer/setting/update', 'Modules\UserModule\App\Http\Controllers\UserModuleController@updateaccount');
 });
+
+// chart
+Route::post('/customer/chart', [ChartUserController::class, 'PushChart']);

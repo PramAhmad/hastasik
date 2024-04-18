@@ -193,4 +193,23 @@ class ProductSellerController extends Controller
             ]);
         }
     }
+    public function productBySeller($id)
+    {
+        $data = DB::connection('mongodb')->collection('products')->where('seller_id', $id)->get();
+        if ($data->count() >= 0) {
+            return response()->json([
+                "message" => "success",
+                "data" => $data,
+                "status" => 200
+
+            ]);
+        } else {
+            return response()->json([
+                "message" => "error",
+                "data" => "data tidak ditemukan",
+                "status" => 404
+
+            ]);
+        }
+    }   
 }
