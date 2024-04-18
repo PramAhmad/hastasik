@@ -82,7 +82,7 @@ class ChartUserController extends Controller
         // subtotal chart
         $chart['subtotal'] = 0;
         foreach ($products as $product) {
-            $chart['subtotal'] += $product['price'] * $product['qty'];
+            $chart['subtotal'] += $product['harga_diskon'] * $product['qty'];
         }
     
         return response()->json([
