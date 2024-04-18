@@ -56,8 +56,9 @@ class ChartUserController extends Controller
             $chart = json_decode(json_encode($chart), true);
             $chart['product']['_id'] = $chart['product']['_id']['$oid'];
             $chart['product']['harga'] = number_format($chart['product']['harga'], 0, ',', '.');
-            
+
             $chart['subtotal'] = $chart['product']['harga'] * $chart['qty'];
+            $total += $chart['subtotal'];
 
         }
     
