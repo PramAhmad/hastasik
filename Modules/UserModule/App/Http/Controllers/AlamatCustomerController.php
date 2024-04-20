@@ -18,6 +18,8 @@ class AlamatCustomerController extends Controller
       $id = Customer::where('user_id', auth()->user()->id)->pluck("id")->first();
    
         $alamat = AlamatCustomer::get()->where('customer_id',$id);
+        // order dari alamat utama
+        $alamat = $alamat->sortByDesc('is_utama');
         $count = $alamat->count();
         if($alamat){
             return response()->json([
