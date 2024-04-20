@@ -42,7 +42,7 @@ class ChartUserController extends Controller
         $charts = DB::connection("mongodb")->collection("chart")
             ->where('customer_id', $customerId)
             ->get();
-        
+         
         if ($charts->isEmpty()) {
             return response()->json([
                 'message' => 'Tidak ada produk dalam chart',
@@ -50,6 +50,8 @@ class ChartUserController extends Controller
             ]);
         }
     
+    
+        $chart["subtotal"] = 0;
         $total = 0;
     
         // Iterasi chart
@@ -72,11 +74,13 @@ class ChartUserController extends Controller
                 $chart['tempsubtotal'] = $harga * $chart['qty'];
                 $chart['subtotal'] = number_format($chart['tempsubtotal'], 0, ',', '.');
                 $total += $chart['tempsubtotal'];
-                $total = number_format($total, 3, ',', '.');
+                $total = number_format($total, 0, ',', '.');
             }
         }
         
-        $chart['subtotal'] = $chart['subtotal'];
+        // map sub total
+      
+       
         return response()->json([
             'message' => 'Chart Berhasil Di Tampilkan',
             'data' => $charts,
