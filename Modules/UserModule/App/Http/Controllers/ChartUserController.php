@@ -51,13 +51,14 @@ class ChartUserController extends Controller
         }
     
     
-        $chart["subtotal"] = 0;
+ 
         $total = 0;
     
         // Iterasi chart
         foreach ($charts as &$chart) {
             $chart = json_decode(json_encode($chart), true);
             $chart['product']['_id'] = $chart['product']['_id']['$oid'];
+            $chart["subtotal"] = 0; 
             
             if (is_numeric($chart['product']['harga_diskon'])) {
                 $harga_diskon = (int) str_replace(".", "", $chart['product']['harga_diskon']);
@@ -79,7 +80,7 @@ class ChartUserController extends Controller
         }
         
         // map sub total
-      
+        $chart["subtotal"] = $chart['subtotal'];
        
         return response()->json([
             'message' => 'Chart Berhasil Di Tampilkan',
