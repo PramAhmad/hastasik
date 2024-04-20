@@ -19,7 +19,8 @@ class ChartUserController extends Controller
         ]);
     
         $customerId = Customer::where('user_id', auth()->user()->id)->pluck("id")->first();
-        $product = DB::connection("mongodb")->collection("products")->where('_id', $validate['product_id'])->first();
+        $product = DB::connection("mongodb")->collection("products")->where('_id', $validate['product_id'])->first();   
+        $product['harga_diskon'] = number_format($product['harga_diskon'], 0, ',', '.');
             $chart = [
                 'customer_id' => $customerId,
                 'product' => $product,
@@ -76,12 +77,14 @@ class ChartUserController extends Controller
                 $chart['tempsubtotal'] = $harga * $chart['qty'];
                 $chart['subtotal'] = number_format($chart['tempsubtotal'], 0, ',', '.');
                 $total += $chart['tempsubtotal'];
-                $total = Number::format($total,'IDR', 'id_ID');
+                
             }
         }
         
         // map sub total
         $chart["subtotal"] = $chart['subtotal'];
+        $total = number_format($total, 0, ',', '.');
+        $total = Number::format($total,'IDR', 'id_ID');
        
         return response()->json([
             'message' => 'Chart Berhasil Di Tampilkan',
