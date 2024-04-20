@@ -23,6 +23,7 @@ class ChartUserController extends Controller
                 'customer_id' => $customerId,
                 'product' => DB::connection("mongodb")->collection("products")->where('_id', $validate['product_id'])->first(),
                 "qty" => $validate['qty'],
+                
             ];
 
             DB::connection("mongodb")->collection("chart")->insert($chart);
@@ -58,11 +59,13 @@ class ChartUserController extends Controller
             $chart['product']['harga_diskon'] = str_replace(".", "", $chart['product']['harga_diskon']);
             $chart['subtotal'] = $chart['product']['harga_diskon'] * $chart['qty'];
             $chart['subtotal'] = number_format($chart['subtotal'], 0, ',', '.');
+            // rambahkan di sub tota l kedalam array chart
+            $chart = array_merge($chart, ['subtotal' => $chart['subtotal']]);
             $total += $chart['subtotal'];
+            $total = number_format($total, 0, ',', '.');
 
         }
-    
-     
+      
         return response()->json([
             'message' => 'Chart Berhasil Di Tampilkan',
             'data' => $charts,
