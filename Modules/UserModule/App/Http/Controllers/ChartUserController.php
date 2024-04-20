@@ -61,19 +61,20 @@ class ChartUserController extends Controller
                 $harga_diskon = (int) str_replace(".", "", $chart['product']['harga_diskon']);
                 
                 // Hitung subtotal
-                $chart['subtotal'] = $harga_diskon * $chart['qty'];
-                $chart['subtotal'] = number_format($chart['subtotal'], 0, ',', '.');
+                $chart['tempsubtotal'] = $harga_diskon * $chart['qty'];
+                $chart['subtotal'] = number_format($chart['tempsubtotal'], 0, ',', '.');
+                $total += $chart['tempsubtotal'];
+            } else {
+                $harga = (int) str_replace(".", "", $chart['product']['harga']);
                 
-                // Tambahkan subtotal ke dalam array
-                $chart['subtotal'] = number_format($chart['subtotal'], 3, '.', ''); 
-                $chart['total'] = $chart['subtotal']; 
+                // Hitung subtotal
+                $chart['tempsubtotal'] = $harga * $chart['qty'];
+                $chart['subtotal'] = number_format($chart['tempsubtotal'], 0, ',', '.');
+                $total += $chart['tempsubtotal'];
             }
         }
         
-        // Hitung total
-        $total = array_sum(array_column($charts, 'total'));
-        
-      
+       
         return response()->json([
             'message' => 'Chart Berhasil Di Tampilkan',
             'data' => $charts,
