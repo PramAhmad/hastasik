@@ -29,8 +29,7 @@ class ChartUserController extends Controller
             $harga = (int) str_replace(".", "", $product['harga']);
             $subtotal = $harga * $validate['qty'];
         }
-        // number format subtotal jadi kayak haga diskon
-        $subtotal = number_format($subtotal, 0, ',', '.');
+    
             $chart = [
                 'customer_id' => $customerId,
                 'product' => $product,
