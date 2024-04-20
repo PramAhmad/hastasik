@@ -56,16 +56,23 @@ class ChartUserController extends Controller
         foreach ($charts as &$chart) {
             $chart = json_decode(json_encode($chart), true);
             $chart['product']['_id'] = $chart['product']['_id']['$oid'];
-            $chart['product']['harga_diskon'] = str_replace(".", "", $chart['product']['harga_diskon']);
-            $chart['subtotal'] = $chart['product']['harga_diskon'] * $chart['qty'];
-            $chart['subtotal'] = number_format($chart['subtotal'], 0, ',', '.');
-            // rambahkan di sub tota l kedalam array chart
-            $chart = array_push($chart, $chart['subtotal']);
-            $total += $chart['subtotal'];
-       
-            $chart['subtotal'] = number_format($chart['subtotal'], 3, '.', '');
-
+            
+            if (is_numeric($chart['product']['harga_diskon'])) {
+                $harga_diskon = (int) str_replace(".", "", $chart['product']['harga_diskon']);
+                
+                // Hitung subtotal
+                $chart['subtotal'] = $harga_diskon * $chart['qty'];
+                $chart['subtotal'] = number_format($chart['subtotal'], 0, ',', '.');
+                
+                // Tambahkan subtotal ke dalam array
+                $chart['subtotal'] = number_format($chart['subtotal'], 3, '.', ''); 
+                $chart['total'] = $chart['subtotal']; 
+            }
         }
+        
+        // Hitung total
+        $total = array_sum(array_column($charts, 'total'));
+        
       
         return response()->json([
             'message' => 'Chart Berhasil Di Tampilkan',
