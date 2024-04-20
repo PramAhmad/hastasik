@@ -84,7 +84,7 @@ class ChartUserController extends Controller
         // map sub total
         $chart["subtotal"] = $chart['subtotal'];
         $total = number_format($total, 0, ',', '.');
-        $total = Number::format($total,'IDR', 'id_ID');
+     
        
         return response()->json([
             'message' => 'Chart Berhasil Di Tampilkan',
