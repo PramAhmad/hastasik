@@ -60,9 +60,10 @@ class ChartUserController extends Controller
             $chart['subtotal'] = $chart['product']['harga_diskon'] * $chart['qty'];
             $chart['subtotal'] = number_format($chart['subtotal'], 0, ',', '.');
             // rambahkan di sub tota l kedalam array chart
-            $chart = array_merge($chart, ['subtotal' => $chart['subtotal']]);
+            $chart = array_push($chart, $chart['subtotal']);
             $total += $chart['subtotal'];
-            $total = number_format($total, 0, ',', '.');
+       
+            $chart['subtotal'] = number_format($chart['subtotal'], 3, '.', '');
 
         }
       
