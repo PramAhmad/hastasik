@@ -84,7 +84,7 @@ class ChartUserController extends Controller
         }
         
         // map sub total
-        $chart["subtotal"] = $chart['subtotal'];
+        $chart["subtotal"] = number_format($chart["subtotal"], 3, ',', '.');
         $total = number_format($total, 3, '.', '.');
      
        
