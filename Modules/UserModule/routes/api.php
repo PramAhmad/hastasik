@@ -59,5 +59,5 @@ Route::middleware(['auth:sanctum','customer'])->group(function () {
 
 // checkout
 Route::middleware(['auth:sanctum','customer'])->group(function () {
-    Route::post('/customer/checkout/getrecipt', 'Modules\UserModule\App\Http\Controllers\CheckOutController@getRecipt');
+    Route::get('/customer/checkout/getrecipt', 'Modules\UserModule\App\Http\Controllers\CheckOutController@getRecipt');
 });
