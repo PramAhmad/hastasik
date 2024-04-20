@@ -20,9 +20,16 @@ class ChartUserController extends Controller
     
         $customerId = Customer::where('user_id', auth()->user()->id)->pluck("id")->first();
         $product = DB::connection("mongodb")->collection("products")->where('_id', $validate['product_id'])->first();   
-        $product['harga_diskon'] = number_format($product['harga_diskon'], 3, ',', '.');
-        $subtotal = $product['harga_diskon'] * $validate['qty'];
-        $subtotal = number_format($subtotal, 3, ',', '.');
+        $subtotal = 0;
+        // harga diskon di kali qty
+        if (is_numeric($product['harga_diskon'])) {
+            $harga_diskon = (int) str_replace(".", "", $product['harga_diskon']);
+            $subtotal = $harga_diskon * $validate['qty'];
+        } else {
+            $harga = (int) str_replace(".", "", $product['harga']);
+            $subtotal = $harga * $validate['qty'];
+        }
+        
             $chart = [
                 'customer_id' => $customerId,
                 'product' => $product,
