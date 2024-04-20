@@ -21,11 +21,13 @@ class ChartUserController extends Controller
         $customerId = Customer::where('user_id', auth()->user()->id)->pluck("id")->first();
         $product = DB::connection("mongodb")->collection("products")->where('_id', $validate['product_id'])->first();   
         $product['harga_diskon'] = number_format($product['harga_diskon'], 3, ',', '.');
+        $subtotal = $product['harga_diskon'] * $validate['qty'];
+        $subtotal = number_format($subtotal, 3, ',', '.');
             $chart = [
                 'customer_id' => $customerId,
                 'product' => $product,
                 "qty" => $validate['qty'],
-                "subtotal" => $product['harga_diskon'] * $validate['qty']
+                "subtotal" => $subtotal,
             ];
 
             DB::connection("mongodb")->collection("chart")->insert($chart);
@@ -75,7 +77,7 @@ class ChartUserController extends Controller
                 
                 // Hitung subtotal
                 $chart['tempsubtotal'] = $harga * $chart['qty'];
-                $chart['subtotal'] = number_format($chart['tempsubtotal'], 0, ',', '.');
+                $chart['subtotal'] = number_format($chart['tempsubtotal'], 3, ',', '.');
                 $total += $chart['tempsubtotal'];
                 
             }
@@ -83,7 +85,7 @@ class ChartUserController extends Controller
         
         // map sub total
         $chart["subtotal"] = $chart['subtotal'];
-        $total = number_format($total, 3, ',', '.');
+        $total = number_format($total, 3, '.', '.');
      
        
         return response()->json([
