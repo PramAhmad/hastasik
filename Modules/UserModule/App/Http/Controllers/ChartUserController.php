@@ -7,6 +7,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Number;
 use Modules\UserModule\App\Models\Customer;
 
 class ChartUserController extends Controller
@@ -18,12 +19,12 @@ class ChartUserController extends Controller
         ]);
     
         $customerId = Customer::where('user_id', auth()->user()->id)->pluck("id")->first();
-
+        $product = DB::connection("mongodb")->collection("products")->where('_id', $validate['product_id'])->first();
             $chart = [
                 'customer_id' => $customerId,
-                'product' => DB::connection("mongodb")->collection("products")->where('_id', $validate['product_id'])->first(),
+                'product' => $product,
                 "qty" => $validate['qty'],
-                
+                "subtotal" => $product['harga_diskon'] * $validate['qty']
             ];
 
             DB::connection("mongodb")->collection("chart")->insert($chart);
@@ -75,7 +76,7 @@ class ChartUserController extends Controller
                 $chart['tempsubtotal'] = $harga * $chart['qty'];
                 $chart['subtotal'] = number_format($chart['tempsubtotal'], 0, ',', '.');
                 $total += $chart['tempsubtotal'];
-                $total = number_format($total, 0, ',', '.');
+                $total = Number::format($total,'IDR', 'id_ID');
             }
         }
         
