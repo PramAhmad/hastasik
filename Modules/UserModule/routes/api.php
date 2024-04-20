@@ -31,6 +31,9 @@ Route::middleware(['auth:sanctum','customer'])->group(function () {
     Route::post('/customer/alamat', 'Modules\UserModule\App\Http\Controllers\AlamatCustomerController@store');
     Route::post('/customer/alamat/{id}', 'Modules\UserModule\App\Http\Controllers\AlamatCustomerController@update');
     Route::delete('/customer/alamat/{id}', 'Modules\UserModule\App\Http\Controllers\AlamatCustomerController@destroy');
+    Route::post('/customer/alamat/utama/{id}', 'Modules\UserModule\App\Http\Controllers\AlamatCustomerController@setAlamatUtama');
+    Route::get('/customer/alamat/utama', 'Modules\UserModule\App\Http\Controllers\AlamatCustomerController@getAlamatUtama');
+
 });
 
 // review

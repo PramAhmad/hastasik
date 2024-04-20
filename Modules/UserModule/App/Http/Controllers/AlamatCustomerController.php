@@ -143,4 +143,48 @@ class AlamatCustomerController extends Controller
             ], 404);
         }
     }
+
+    public function setAlamatUtama($id)
+    {
+        $alamat = AlamatCustomer::find($id);
+        $id = Customer::where('user_id', auth()->user()->id)->pluck("id")->first();
+        if($alamat){
+            $alamat->update([
+                'is_utama' => 1
+            ]);
+            AlamatCustomer::where('customer_id', $id)->where('id', '!=', $alamat->id)->update([
+                'is_utama' => 0
+            ]);
+            return response()->json([
+                'success' => true,
+                'message' => 'Alamat utama berhasil diupdate',
+                'data' => $alamat
+            ], 200);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data Gak Ada',
+                'data' => ''
+            ], 404);
+        }
+    }
+
+    public function getAlamatUtama()
+    {
+        $id = Customer::where('user_id', auth()->user()->id)->pluck("id")->first();
+        $alamat = AlamatCustomer::where('customer_id', $id)->where('is_utama', 1)->first();
+        if($alamat){
+            return response()->json([
+                'success' => true,
+                'message' => 'Alamat utama customer',
+                'data' => $alamat
+            ], 200);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data Gak Ada',
+                'data' => ''
+            ], 404);
+        }
+    }
 }

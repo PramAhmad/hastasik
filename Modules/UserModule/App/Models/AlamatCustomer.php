@@ -26,6 +26,7 @@ class AlamatCustomer extends Model
         'provinsi',
         'province_id',
         'city_id',
+        'is_utama'
         
     ];
     
