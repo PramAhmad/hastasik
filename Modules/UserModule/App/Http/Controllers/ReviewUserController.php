@@ -101,11 +101,13 @@ class ReviewUserController extends Controller
 
     public function GetReviewbyCustomer() {
         $id = Customer::where('user_id', auth()->user()->id)->pluck("id")->first();
-        $review = DB::connection("mongodb")->collection("products")->where('review.customer_id', $id)->get();
-        if($review){
+        $reviewbyId = DB::connection("mongodb")->collection("products")
+        ->where('review.customer_id', $id)
+        ->get();
+        if($reviewbyId){
             return response()->json([
                 'message' => 'Review Produk',
-                'data' => $review['review'],
+                'data' => $reviewbyId       ,
                 'status' => 200
             ]);
         } else {
