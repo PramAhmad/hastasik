@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Modules\UserModule\App\Models\Customer;
+use Tymon\JWTAuth\Claims\Custom;
 
 class ReviewUserController extends Controller
 {
@@ -89,5 +90,23 @@ class ReviewUserController extends Controller
                  'status' => 404
                 ]);
           }
+    }
+
+    public function GetReviewbyCustomer(){
+        $customerId = Customer::select("id")->where('user_id', auth()->user()->id)->first();
+        $review = DB::connection("mongodb")->collection("products")->where('review', 'elemMatch', ['customer_id' => $customerId->id])->get();
+        if($review){
+            return response()->json([
+                'message' => 'Review Produk Customer',
+                'data' => $review['review'],
+                'status' => 200
+            ]);
+        } else {
+            return response()->json([
+                'message' => 'Data Gak Ada',
+                'data' => '',
+                'status' => 404
+            ]);
+        }
     }
 }

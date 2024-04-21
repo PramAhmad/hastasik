@@ -39,6 +39,7 @@ Route::middleware(['auth:sanctum','customer'])->group(function () {
 // review
 Route::middleware(['auth:sanctum','customer'])->group(function () {
     Route::post('/customer/review', 'Modules\UserModule\App\Http\Controllers\ReviewUserController@PostReview');
+    Route::get('/customer/review', 'Modules\UserModule\App\Http\Controllers\ReviewUserController@GetReviewbyCustomer');
 });
 
 
