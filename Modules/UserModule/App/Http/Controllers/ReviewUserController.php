@@ -40,10 +40,13 @@ class ReviewUserController extends Controller
             $review['review'] = [];
         }    
         $review['review'][] = [
+
+            'customer_id' => $customer->id,
             'nama_customer' =>$customer->nama_lengkap ,
             'photo_customer' => $customer->photo,
             'rating' => $validate['rating'],
-            'review' => $validate['review']
+            'review' => $validate['review'],
+            'created_at' => date('Y-m-d H:i:s'),
         ];
         $avgreview = 0;
             foreach ($review['review'] as $key => $value) {
@@ -76,7 +79,11 @@ class ReviewUserController extends Controller
                 return response()->json(["pmessage" => "error", "data" => "data not valid", "status" => 400]);
           }
     
-          $review = DB::connection("mongodb")->collection("products")->where('_id', $validate['product_id'])->get();
+          //   order by created at
+          $review = DB::connection("mongodb")->collection("products")->where('_id', $validate['product_id'])
+          ->orderBy('review.created_at', 'desc')
+          ->get();
+    
           if($review){
                 return response()->json([
                  'message' => 'Review Produk',
@@ -93,8 +100,8 @@ class ReviewUserController extends Controller
     }
 
     public function GetReviewbyCustomer(){
-        $customerId = Customer::select("id")->where('user_id', auth()->user()->id)->first();
-        $review = DB::connection("mongodb")->collection("products")->where('review', 'elemMatch', ['customer_id' => $customerId->id])->get();
+        $id = Customer::where('user_id', auth()->user()->id)->pluck("id")->first();
+        $review = DB::connection("mongodb")->collection("products")->where('review', 'elemMatch', ['customer_id' => $id])->get();
         if($review){
             return response()->json([
                 'message' => 'Review Produk Customer',
