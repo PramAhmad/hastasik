@@ -31,64 +31,58 @@ class UserModuleController extends Controller
 
     }
 
-    public function update(Request $request)
+    public function update($request)
     {
         $customer = Customer::where('user_id', auth()->user()->id)->first();
-        if ($customer) {
-            if ($request->file('photo')) { 
-             // Hapus foto lama jika ada
-              
-                    $fileNameToDelete = basename($customer->photo);               
-                    Storage::disk('public')->delete('clientphoto/' . $fileNameToDelete);
-                    // delete record
-                    $customer->update([
-                        'photo' => null
-                    ]);
-                    
-                
-                $file = $request->file('photo');
-                $fileName = time() . '_' . str_replace(' ', '_', $file->getClientOriginalName());
-                $file->storeAs('clientphoto', $fileName, 'public');
-                $fileUrl = url('storage/clientphoto/' . $fileName);
-    
-             
-                if ($file->getSize() > 6048) {
-                    return response()->json([
-                        "message" => "File terlalu besar",
-                        "status" => 400,
-                    ]);
-                }
-    
-                
-    
-          
-                $customer->update([
-                    'phone_number' => $request->phone_number,
-                    'nama_lengkap' => $request->nama_lengkap,
-                    'photo' => $fileUrl
-                ]);
-            } else {
-               
-                $customer->update([
-                    'phone_number' => $request->phone_number,
-                    'nama_lengkap' => $request->nama_lengkap,
-                ]);
-            }
-    
-            // Response berhasil
-            return response()->json([
-                'success' => true,
-                'message' => 'Data berhasil diupdate',
-                'data' => $customer
-            ], 200);
-        } else {
-          
+
+        if (!$customer) {
             return response()->json([
                 'success' => false,
                 'message' => 'Data tidak ditemukan',
-                'data' => ''
             ], 404);
         }
+
+
+        if ($request->hasFile('photo')) {
+       
+            $request->validate([
+                'photo' => 'image|mimes:jpeg,png,jpg,gif,svg|max:6048',
+            ]);
+ 
+            if ($customer->photo) {
+                $this->deletePhoto($customer->photo);
+            }   
+            $photoUrl = $this->storePhoto($request->file('photo'));
+        } else {
+  
+            $photoUrl = $customer->photo;
+        }
+
+     
+        $customer->update([
+            'phone_number' => $request->phone_number,
+            'nama_lengkap' => $request->nama_lengkap,
+            'photo' => $photoUrl,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Data berhasil diperbarui',
+            'data' => $customer,
+        ], 200);
+    }
+
+    protected function storePhoto($photo)
+    {
+        $fileName = time() . '_' . $photo->getClientOriginalName();
+        $photo->storeAs('clientphoto', $fileName, 'public');
+        return url('storage/clientphoto/' . $fileName);
+    }
+
+    protected function deletePhoto($photoUrl)
+    {
+        $fileName = basename($photoUrl);
+        Storage::disk('public')->delete('clientphoto/' . $fileName);
     }
     
     public function updateaccount(Request $request){
