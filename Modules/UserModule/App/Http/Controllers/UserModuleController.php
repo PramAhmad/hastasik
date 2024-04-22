@@ -37,10 +37,15 @@ class UserModuleController extends Controller
         if ($customer) {
             if (!empty($request->file('photo'))) { 
              // Hapus foto lama jika ada
-             if ($customer->photo) {
-                $fileNameToDelete = basename($customer->photo);               
-                Storage::disk('public')->delete('clientphoto/' . $fileNameToDelete);
-            }
+                if ($customer->photo) {
+                    $fileNameToDelete = basename($customer->photo);               
+                    Storage::disk('public')->delete('clientphoto/' . $fileNameToDelete);
+                    // delete record
+                    $customer->update([
+                        'photo' => null
+                    ]);
+                    
+                }
                 $file = $request->file('photo');
                 $fileName = time() . '_' . str_replace(' ', '_', $file->getClientOriginalName());
                 $file->storeAs('clientphoto', $fileName, 'public');
