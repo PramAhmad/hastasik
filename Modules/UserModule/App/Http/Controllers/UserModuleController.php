@@ -33,11 +33,7 @@ class UserModuleController extends Controller
 
     public function update(Request $request)
     {
-        $validate = $request->validate([
-            'phone_number' => 'required',
-            'nama_lengkap' => 'required',
-            'photo' => 'image|mimes:jpeg,png,jpg,gif,svg|max:6048',
-        ]);
+        
     
         $customer = Customer::where('user_id', auth()->user()->id)->first();
         if ($customer) {
@@ -61,14 +57,14 @@ class UserModuleController extends Controller
                 }
     
                 $customer->update([
-                    'phone_number' => $validate['phone_number'],
-                    'nama_lengkap' => $validate['nama_lengkap'],
+                    'phone_number' => $request->phone_number,
+                    'nama_lengkap' => $request->nama_lengkap,
                     'photo' => $fileUrl
                 ]);
             } else {
                 $customer->update([
-                    'phone_number' => $validate['phone_number'],
-                    'nama_lengkap' => $validate['nama_lengkap'],
+                    'phone_number' => $request->phone_number,
+                    'nama_lengkap' => $request->nama_lengkap,
                 ]);
             }
     
