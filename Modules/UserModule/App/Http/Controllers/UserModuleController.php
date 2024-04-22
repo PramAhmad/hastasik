@@ -33,16 +33,16 @@ class UserModuleController extends Controller
 
     public function update(Request $request)
     {
-        
-    
         $customer = Customer::where('user_id', auth()->user()->id)->first();
         if ($customer) {
             if ($request->hasFile('photo')) { 
+             
                 $file = $request->file('photo');
                 $fileName = time() . '_' . str_replace(' ', '_', $file->getClientOriginalName());
                 $file->storeAs('clientphoto', $fileName, 'public');
                 $fileUrl = url('storage/clientphoto/' . $fileName);
     
+             
                 if ($file->getSize() > 6048) {
                     return response()->json([
                         "message" => "File terlalu besar",
@@ -50,38 +50,42 @@ class UserModuleController extends Controller
                     ]);
                 }
     
-               
+                // Hapus foto lama jika ada
                 if ($customer->photo) {
                     $fileNameToDelete = basename($customer->photo);               
                     Storage::disk('public')->delete('clientphoto/' . $fileNameToDelete);
                 }
     
+          
                 $customer->update([
                     'phone_number' => $request->phone_number,
                     'nama_lengkap' => $request->nama_lengkap,
                     'photo' => $fileUrl
                 ]);
             } else {
+               
                 $customer->update([
                     'phone_number' => $request->phone_number,
                     'nama_lengkap' => $request->nama_lengkap,
                 ]);
             }
     
+            // Response berhasil
             return response()->json([
                 'success' => true,
                 'message' => 'Data berhasil diupdate',
                 'data' => $customer
             ], 200);
         } else {
+            // Response jika data pelanggan tidak ditemukan
             return response()->json([
                 'success' => false,
-                'message' => 'Data Gak Ada',
+                'message' => 'Data tidak ditemukan',
                 'data' => ''
             ], 404);
         }
     }
-
+    
     public function updateaccount(Request $request){
         $validate = $request->validate([
 
