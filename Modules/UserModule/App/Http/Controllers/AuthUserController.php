@@ -32,7 +32,7 @@ class AuthUserController extends Controller
         $fileName = time() . '_' . str_replace(' ', '_', $file->getClientOriginalName());
         $file->storeAs('clientphoto', $fileName, 'public');
         $fileUrl = url('storage/clientphoto/' . $fileName);
-        if ($file->getSize() > 6048) {
+        if ($file->getSize() > 10000) {
             return response()->json([
                 "message" => "File terlalu besar",
                 "status"     => 400,
