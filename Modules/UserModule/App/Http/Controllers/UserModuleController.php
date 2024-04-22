@@ -36,7 +36,7 @@ class UserModuleController extends Controller
         $validate = $request->validate([
             'phone_number' => 'required',
             'nama_lengkap' => 'required',
-            'photo' => 'nullable|image|jpeg|png|jpg|max:6048', 
+            'photo' => 'image|mimes:jpeg,png,jpg,gif,svg|max:6048',
         ]);
     
         $customer = Customer::where('user_id', auth()->user()->id)->first();
