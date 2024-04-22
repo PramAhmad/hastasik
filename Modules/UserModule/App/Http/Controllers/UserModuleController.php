@@ -35,7 +35,7 @@ class UserModuleController extends Controller
     {
         $customer = Customer::where('user_id', auth()->user()->id)->first();
         if ($customer) {
-            if ($request->hasFile('photo')) { 
+            if (!empty($request->file('photo'))) { 
              
                 $file = $request->file('photo');
                 $fileName = time() . '_' . str_replace(' ', '_', $file->getClientOriginalName());
@@ -77,7 +77,7 @@ class UserModuleController extends Controller
                 'data' => $customer
             ], 200);
         } else {
-            // Response jika data pelanggan tidak ditemukan
+          
             return response()->json([
                 'success' => false,
                 'message' => 'Data tidak ditemukan',
