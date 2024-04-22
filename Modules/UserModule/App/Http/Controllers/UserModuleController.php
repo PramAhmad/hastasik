@@ -31,46 +31,43 @@ class UserModuleController extends Controller
 
     }
 
-    public function update($request)
+    public function update(Request $request)
     {
+        $request->validate([
+            'nama_lengkap' => 'required',
+            'phone_number' => 'required',
+            'photo' => 'image|mimes:jpeg,png,jpg,gif,svg|max:6048',
+        ]);
+    
         $customer = Customer::where('user_id', auth()->user()->id)->first();
-
+    
         if (!$customer) {
             return response()->json([
                 'success' => false,
                 'message' => 'Data tidak ditemukan',
             ], 404);
         }
-
-
+    
         if ($request->hasFile('photo')) {
-       
-            $request->validate([
-                'photo' => 'image|mimes:jpeg,png,jpg,gif,svg|max:6048',
-            ]);
- 
-            if ($customer->photo) {
-                $this->deletePhoto($customer->photo);
-            }   
-            $photoUrl = $this->storePhoto($request->file('photo'));
+            $this->deletePhoto($customer->photo); 
+            $photoUrl = $this->storePhoto($request->file('photo')); 
         } else {
-  
-            $photoUrl = $customer->photo;
+            $photoUrl = $customer->photo; 
         }
-
-     
+    
         $customer->update([
-            'phone_number' => $request->phone_number,
             'nama_lengkap' => $request->nama_lengkap,
+            'phone_number' => $request->phone_number,
             'photo' => $photoUrl,
         ]);
-
+    
         return response()->json([
             'success' => true,
             'message' => 'Data berhasil diperbarui',
             'data' => $customer,
         ], 200);
     }
+    
 
     protected function storePhoto($photo)
     {
