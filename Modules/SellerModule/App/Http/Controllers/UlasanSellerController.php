@@ -14,18 +14,20 @@ class UlasanSellerController extends Controller
     public function getReviewsBySeller()
 {
 
-    // get seller id by user logined
+
     $sellerId = Seller::where('user_id', auth()->user()->id)->first()->id;
     $products = DB::connection('mongodb')
-                ->table('products')
+                ->collection('products')
                 ->where('seller.id', $sellerId)
                 ->get();
     $reviews = [];
-    foreach ($products as $product) {   
-        if (isset($product->review)) {
-            $reviews = array_merge($reviews, $product->review);
+    foreach ($products as $product) {
+        if (isset($product['review'])) {
+            $reviews = array_merge($reviews, $product['review']);
         }
     }
+    
+
     return response()->json([
         'message' => 'success',
         'data' => $reviews,
