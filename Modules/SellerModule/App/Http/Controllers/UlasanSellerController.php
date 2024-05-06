@@ -16,17 +16,16 @@ class UlasanSellerController extends Controller
 
     // get seller id by user logined
     $sellerId = Seller::where('user_id', auth()->user()->id)->first()->id;
- 
-    $products = DB::connection('mongodb')->table('products')
-        ->where('seller.id', $sellerId)
-        ->get();
+    $products = DB::connection('mongodb')
+                ->table('products')
+                ->where('seller.id', $sellerId)
+                ->get();
     $reviews = [];
     foreach ($products as $product) {   
         if (isset($product->review)) {
             $reviews = array_merge($reviews, $product->review);
         }
     }
-
     return response()->json([
         'message' => 'success',
         'data' => $reviews,
