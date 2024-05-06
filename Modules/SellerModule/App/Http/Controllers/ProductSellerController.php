@@ -132,62 +132,68 @@ class ProductSellerController extends Controller
     }
 
     public function update(Request $request, $id)
-    {
-        try {
-            $request->validate([
-                'nama_produk' => 'required',
-                'harga' => 'required',
-                'deskripsi' => 'required',
-                'stok' => 'required',
-                'foto' => 'required',
-                'category' => 'required'
-            ]);
-        } catch (\Throwable $th) {
-            return response()->json(["message" => "error", "data" => "data not valid", "status" => 400]);
-        }
-        // handle multiple update foto
-        $foto = $request->file('foto');
-        $fotoNames = [];
-        foreach ($foto as $index => $f) {
-            $fotoName = time() . $index . '.' . $f->extension();
-            $f->storeAs('fotoproducts', $fotoName, 'public');
-            $fileurl = url('storage/fotoproducts/' . $fotoName);
-            $fotoNames[$index] = $fileurl;
-        }
-        $afterDiskon = $request->harga - ($request->harga * $request->diskon / 100);
-        $afterDiskon = number_format($afterDiskon, 0, ',', '.');
-        $harga = number_format($request->harga, 0, ',', '.');
-        $seller = Seller::where('user_id', auth()->user()->id)->first()->only('id', 'nama_toko','foto');
-        $data = DB::connection('mongodb')->collection('products')->where('_id', $id)->update([
-            "nama_produk" => $request->nama_produk,
-            "seller" => $seller,
-            "harga" => $harga,
-            "diskon" => $request->diskon,
-            "harga_diskon" => $afterDiskon,
-            "deskripsi" => $request->deskripsi,
-            "stok" => $request->stok,
-            "foto" => $fotoNames,
-            "category" => $request->category,
-            "updated_at" => date('Y-m-d')
+{
+    try {
+        $request->validate([
+            'nama_produk' => 'required',
+            'harga' => 'required',
+            'deskripsi' => 'required',
+            'stok' => 'required',
+            'foto' => 'required',
+            'category' => 'required'
         ]);
+    } catch (\Throwable $th) {
+        return response()->json(["message" => "error", "data" => "data not valid", "status" => 400]);
+    }
 
     
-        if ($data == true) {
-            return response()->json([
-                "message" => "success",
-                "data" => $data,
-                "status" => 200
+    $product = DB::connection('mongodb')->collection('products')->where('_id', $id)->first();
+    $existingPhotos = $product['foto'];
+    $newPhotos = $request->file('foto');
+    $fotoNames = [];
 
-            ]);
-        } else {
-            return response()->json([
-                "message" => "error",
-                "data" => "data not found",
-                "status" => 404
-
-            ]);
-        }
+    foreach ($newPhotos as $index => $f) {
+        $fotoName = time() . $index . '.' . $f->extension();
+        $f->storeAs('fotoproducts', $fotoName, 'public');
+        $fileurl = url('storage/fotoproducts/' . $fotoName);
+        $fotoNames[$index] = $fileurl;
     }
+
+    // combine foto lama sama baru
+    $allPhotos = array_merge($existingPhotos, $fotoNames);
+
+    $afterDiskon = $request->harga - ($request->harga * $request->diskon / 100);
+    $afterDiskon = number_format($afterDiskon, 0, ',', '.');
+    $harga = number_format($request->harga, 0, ',', '.');
+    $seller = Seller::where('user_id', auth()->user()->id)->first()->only('id', 'nama_toko','foto');
+
+    $data = DB::connection('mongodb')->collection('products')->where('_id', $id)->update([
+        "nama_produk" => $request->nama_produk,
+        "seller" => $seller,
+        "harga" => $harga,
+        "diskon" => $request->diskon,
+        "harga_diskon" => $afterDiskon,
+        "deskripsi" => $request->deskripsi,
+        "stok" => $request->stok,
+        "foto" => $allPhotos, 
+        "category" => $request->category,
+        "updated_at" => date('Y-m-d')
+    ]);
+
+    if ($data == true) {
+        return response()->json([
+            "message" => "success",
+            "data" => $data,
+            "status" => 200
+        ]);
+    } else {
+        return response()->json([
+            "message" => "error",
+            "data" => "data not found",
+            "status" => 404
+        ]);
+    }
+}
 
     public function destroy($id)
     {
