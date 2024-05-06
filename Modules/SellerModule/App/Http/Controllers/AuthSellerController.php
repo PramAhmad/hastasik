@@ -55,7 +55,7 @@ class AuthSellerController extends Controller
         $file->storeAs('sellerfoto', $fileName, 'public');
         $fileUrl = url('storage/sellerfoto/' . $fileName);
         // validate size file
-        if ($file->getSize() > 6048) {
+        if ($file->getSize() > 60480) {
             return response()->json([
                 "message" => "File terlalu besar",
                 "status"     => 400,

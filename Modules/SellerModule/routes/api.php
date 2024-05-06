@@ -33,7 +33,7 @@ Route::middleware(['auth:sanctum', 'seller'])->group(function () {
     Route::get('/seller/products', [ProductSellerController::class, 'index']);
     Route::post('/seller/products/create', [ProductSellerController::class, 'store']);
     Route::get('/seller/products/{id}', [ProductSellerController::class, 'show']);
-    Route::put('/seller/products/{id}', [ProductSellerController::class, 'update']);
+    Route::post('/seller/products/{id}', [ProductSellerController::class, 'update']);
     Route::delete('/seller/products/{id}', [ProductSellerController::class, 'destroy']);
     // route product by seller id
     Route::get('/products/seller/{id}', [ProductSellerController::class, 'productBySeller']);

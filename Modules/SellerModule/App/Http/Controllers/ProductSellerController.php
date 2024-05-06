@@ -145,18 +145,33 @@ class ProductSellerController extends Controller
         } catch (\Throwable $th) {
             return response()->json(["message" => "error", "data" => "data not valid", "status" => 400]);
         }
-
+        // handle multiple update foto
+        $foto = $request->file('foto');
+        $fotoNames = [];
+        foreach ($foto as $index => $f) {
+            $fotoName = time() . $index . '.' . $f->extension();
+            $f->storeAs('fotoproducts', $fotoName, 'public');
+            $fileurl = url('storage/fotoproducts/' . $fotoName);
+            $fotoNames[$index] = $fileurl;
+        }
+        $afterDiskon = $request->harga - ($request->harga * $request->diskon / 100);
+        $afterDiskon = number_format($afterDiskon, 0, ',', '.');
+        $harga = number_format($request->harga, 0, ',', '.');
+        $seller = Seller::where('user_id', auth()->user()->id)->first()->only('id', 'nama_toko','foto');
         $data = DB::connection('mongodb')->collection('products')->where('_id', $id)->update([
             "nama_produk" => $request->nama_produk,
-            "seller_id" => auth()->user()->id,
-            "harga" => $request->harga,
+            "seller" => $seller,
+            "harga" => $harga,
+            "diskon" => $request->diskon,
+            "harga_diskon" => $afterDiskon,
             "deskripsi" => $request->deskripsi,
             "stok" => $request->stok,
-            "foto" => $request->foto,
+            "foto" => $fotoNames,
             "category" => $request->category,
             "updated_at" => date('Y-m-d')
         ]);
 
+    
         if ($data == true) {
             return response()->json([
                 "message" => "success",
