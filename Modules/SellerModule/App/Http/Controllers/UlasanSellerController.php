@@ -16,10 +16,7 @@ class UlasanSellerController extends Controller
 
     // get seller id by user logined
     $sellerId = Seller::where('user_id', auth()->user()->id)->first()->id;
-    return response()->json([
-        'message' => 'success',
-        'data' => $sellerId,
-    ]);
+ 
     $products = DB::connection('mongodb')->table('products')
         ->where('seller.id', $sellerId)
         ->get();
