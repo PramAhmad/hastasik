@@ -24,7 +24,15 @@ class UlasanSellerController extends Controller
     foreach ($products as $product) {
         if (isset($product['review'])) {
             $reviews = array_merge($reviews, $product['review']);
+            // add product name and photo to review
+            $reviews = array_map(function($review) use ($product) {
+                $review['product_name'] = $product['nama_produk'];
+                $review['product_photo'] = $product['foto'][0];
+                return $review;
+            }, $reviews);
+       
         }
+
     }
     
 
