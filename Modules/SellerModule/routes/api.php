@@ -38,12 +38,12 @@ Route::middleware(['auth:sanctum', 'seller'])->group(function () {
     Route::delete('/seller/products/{id}', [ProductSellerController::class, 'destroy']);
     // route product by seller id
     Route::get('/products/seller/{id}', [ProductSellerController::class, 'productBySeller']);
+    
+    // route ulasan
+    Route::get("/seller/reviews", [UlasanSellerController::class, 'getReviewsBySeller']);
 });
 
 // route seller info
 Route::get("/seller/info/{id}", [SellerModuleController::class, 'getSellerInfobyId']);
 
-
-// route ulasan
-Route::get("/seller/reviews", [UlasanSellerController::class, 'getReviewsBySeller']);
 

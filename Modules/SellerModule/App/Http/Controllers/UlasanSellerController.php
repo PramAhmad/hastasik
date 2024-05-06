@@ -11,7 +11,7 @@ use Modules\SellerModule\App\Models\Seller;
 
 class UlasanSellerController extends Controller
 {
-    public function getReviewsBySeller(Request $request)
+    public function getReviewsBySeller()
 {
 
     // get seller id by user logined
