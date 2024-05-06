@@ -13,7 +13,9 @@ class UlasanSellerController extends Controller
 {
     public function getReviewsBySeller(Request $request)
 {
-    $sellerId = Seller::where('user_id', auth()->user()->id)->first()->id;
+
+    $seller = Seller::where('user_id', auth()->user()->id)->first();
+    $sellerId = $seller->id;
     $products = DB::connection('mongodb')->table('products')
         ->where('seller.id', $sellerId)
         ->get();
