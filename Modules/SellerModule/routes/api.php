@@ -39,11 +39,11 @@ Route::middleware(['auth:sanctum', 'seller'])->group(function () {
     // route product by seller id
     Route::get('/products/seller/{id}', [ProductSellerController::class, 'productBySeller']);
     
+    Route::get("/seller/reviews", [UlasanSellerController::class, 'getReviewsBySeller']);
     // route ulasan
 });
 
 // route seller info
 Route::get("/seller/info/{id}", [SellerModuleController::class, 'getSellerInfobyId']);
-Route::get("/seller/reviews", [UlasanSellerController::class, 'getReviewsBySeller']);
 
 
