@@ -82,30 +82,77 @@ class UserModuleController extends Controller
         Storage::disk('public')->delete('clientphoto/' . $fileName);
     }
     
-    public function updateaccount(Request $request){
-        $validate = $request->validate([
-
-            'email' => 'required|email',
+    public function updatepassword(Request $request){
+        $request->validate([
             'password' => 'required',
+            'new_password' => 'required',
         ]);
-        $customer = User::where('id', auth()->user()->id)->first();
-        if ($customer) {
-            $customer->update([
-                'email' => $validate['email'],
-                'password' => bcrypt($validate['password']),
-            ]);
-            return response()->json([
-                'success' => true,
-                'message' => 'Data berhasil diupdate',
-                'data' => $customer
-            ], 200);
-        } else {
+    
+        $user = User::find(auth()->user()->id);
+    
+        if (!password_verify($request->password, $user->password)) {
             return response()->json([
                 'success' => false,
-                'message' => 'Data Gak Ada',
-                'data' => ''
+                'message' => 'Password lama salah',
+            ], 400);
+        }
+    
+        $user->update([
+            'password' => bcrypt($request->new_password),
+        ]);
+    
+        return response()->json([
+            'success' => true,
+            'message' => 'Password berhasil diperbarui',
+        ], 200);
+    }
+
+    public function ForgotPassword(Request $request){
+        $request->validate([
+            'email' => 'required|email',
+        ]);
+    
+        $user = User::where('email', $request->email)->first();
+    
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Email tidak terdaftar',
             ], 404);
         }
+    
+       //kirim notifikasi untuk redirect ke halaman reset password
+        $user->sendEmailVerificationNotification();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Email verifikasi telah dikirim',
+        ], 200);
+    }
+
+    public function ResetPassword(Request $request){
+        $request->validate([
+            'token' => 'required',
+            'password' => 'required',
+        ]);
+    
+        $user = User::where('email', $request->email)->first();
+    
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Email tidak terdaftar',
+            ], 404);
+        }
+    
+        $user->update([
+            'password' => bcrypt($request->password),
+        ]);
+    
+        return response()->json([
+            'success' => true,
+            'message' => 'Password berhasil direset',
+        ], 200);
     }
     
 }

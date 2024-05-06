@@ -51,7 +51,7 @@ Route::middleware(['auth:sanctum','customer'])->group(function () {
 
 // akun setting
 Route::middleware(['auth:sanctum','customer'])->group(function () {
-    Route::put('/customer/setting/update', 'Modules\UserModule\App\Http\Controllers\UserModuleController@updateaccount');
+    Route::post('/customer/setting/update', 'Modules\UserModule\App\Http\Controllers\UserModuleController@updateaccount');
 });
 
 // chart

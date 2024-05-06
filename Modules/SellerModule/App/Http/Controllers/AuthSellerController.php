@@ -40,7 +40,9 @@ class AuthSellerController extends Controller
                 'alamat' => 'required',
                 'longitude' => 'required',
                 'latitude' => 'required',
+
             ]
+            
         );
         }catch(\Throwable $th){
             return response()->json(["message" => "error", "data" => "data not valid", "status" => 400]);
