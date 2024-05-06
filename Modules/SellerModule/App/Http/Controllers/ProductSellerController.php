@@ -164,7 +164,7 @@ class ProductSellerController extends Controller
        
             $allPhotos = $existingPhotos;
         }
-    
+       
         $afterDiskon = $request->harga - ($request->harga * $request->diskon / 100);
         $afterDiskon = number_format($afterDiskon, 0, ',', '.');
         $harga = number_format($request->harga, 0, ',', '.');

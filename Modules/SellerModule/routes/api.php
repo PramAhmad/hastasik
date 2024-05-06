@@ -43,4 +43,6 @@ Route::middleware(['auth:sanctum', 'seller'])->group(function () {
 Route::get("/seller/info/{id}", [SellerModuleController::class, 'getSellerInfobyId']);
 
 
+// route ulasan
+Route::get("/seller/reviews", [SellerModuleController::class, 'getReviewsBySeller']);
 
