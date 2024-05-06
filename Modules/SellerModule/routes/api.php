@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use Modules\SellerModule\App\Http\Controllers\AuthSellerController;
 use Modules\SellerModule\App\Http\Controllers\ProductSellerController;
 use Modules\SellerModule\App\Http\Controllers\SellerModuleController;
+use Modules\SellerModule\App\Http\Controllers\UlasanSellerController;
 
 /*
     |--------------------------------------------------------------------------
@@ -44,5 +45,5 @@ Route::get("/seller/info/{id}", [SellerModuleController::class, 'getSellerInfoby
 
 
 // route ulasan
-Route::get("/seller/reviews", [SellerModuleController::class, 'getReviewsBySeller']);
+Route::get("/seller/reviews", [UlasanSellerController::class, 'getReviewsBySeller']);
 
